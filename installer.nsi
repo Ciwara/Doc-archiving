@@ -58,7 +58,7 @@ Section "install"
   File /r *.dll
   File /r *.manifest
   File /r ${IMAGES}
-  File /r ${CIMAGES}
+  ;File /r ${CIMAGES}
   ;File /r ${ARMOIRE}
 
 ;create desktop shortcut

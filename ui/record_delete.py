@@ -51,16 +51,7 @@ class DeleteRecordsViewWidget(QDialog, F_Widget):
 
     def delete(self):
         from ui.records import RecordsViewWidget
-
-        # prev_image = unicode(self.record.doc_file_mane)
         self.record.remove_doc()
-
-        # if prev_image:
-        #     try:
-        #         os.remove(prev_image)
-        #     except:
-        #         raise
-        #         pass
         self.cancel()
         self.change_main_context(RecordsViewWidget)
         raise_success(u"Confirmation", u"<b>le produit à été bien supprimé</b>")

@@ -14,6 +14,7 @@ from configuration import Config
 from ui.menubar import MenuBar
 from ui.statusbar import GStatusBar
 from ui.records import RecordsViewWidget
+from ui.record_consultation import RecordConsultationViewWidget
 
 
 class MainWindow(FMainWindow):
@@ -27,12 +28,11 @@ class MainWindow(FMainWindow):
         if Config.LOGIN:
             self.page = LoginWidget
 
-        self.page = RecordsViewWidget
+        # self.page = RecordsViewWidget
+        # self.page = RecordConsultationViewWidget
 
         self.change_context(self.page)
 
-        # from ui.record_consultation import RecordConsultationViewWidget
-        # self.change_context(RecordConsultationViewWidget)
 
     def exit(self):
         self.logout()

@@ -97,22 +97,23 @@ class ResultatTableWidget(F_TableWidget):
 
         self.parent = parent
         self.hheaders = ["i", u"Categorie", u"Documents"]
-        self.stretch_columns = [1]
+        self.stretch_columns = [2]
         self.align_map = {1: 'l'}
         self.display_vheaders = True
+        # self.ecart = -250
         self.display_fixed = True
         self.refresh_("", "")
 
     def refresh_(self, categ, value):
 
         # pw = self.width() / len(self.hheaders)
-        self.set_data_for(categ, value)
-        self.refresh()
         pw = 100
         self.setColumnWidth(0, 20)
         self.setColumnWidth(1, pw * 2)
         self.setColumnWidth(2, pw)
         self._reset()
+        self.set_data_for(categ, value)
+        self.refresh()
 
     def set_data_for(self, categ, value):
         records = []
@@ -177,7 +178,5 @@ class InfoTableWidget(F_Widget):
 
     def print_doc(self):
         """ """
-        print("eeeeeeeeeeeeeeeeeeeeeeee")
-        print(self.record.doc_file_mane)
-        uopen_file(self.record.doc_file_mane)
-        return
+        uopen_file(self.record.doc_file_slug)
+        return False
