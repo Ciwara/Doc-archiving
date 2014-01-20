@@ -8,8 +8,8 @@ import os
 from PyQt4.QtGui import (QVBoxLayout, QHBoxLayout, QGridLayout, QDialog)
 from PyQt4.QtCore import Qt
 
-from common.ui.common import (F_Widget, F_PageTitle, Button, F_Label)
-from common.ui.util import raise_success
+from Common.ui.common import (F_Widget, F_PageTitle, Button, F_Label)
+from Common.ui.util import raise_success
 
 
 class DeleteRecordsViewWidget(QDialog, F_Widget):

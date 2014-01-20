@@ -3,7 +3,7 @@
 # vim: ai ts=4 sts=4 et sw=4 nu
 # Maintainer: Fad
 
-from common.cstatic import CConstants
+from Common.cstatic import CConstants
 
 
 class Constants(CConstants):

@@ -5,8 +5,8 @@ from __future__ import (unicode_literals, absolute_import, division, print_funct
 
 from PyQt4.QtGui import QIcon
 
-from common.ui.login import LoginWidget
-from common.ui.common import FMainWindow
+from Common.ui.login import LoginWidget
+from Common.ui.common import FMainWindow
 
 from model import Owner
 from configuration import Config

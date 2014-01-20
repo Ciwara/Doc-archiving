@@ -13,13 +13,11 @@ from configuration import Config
 from model import (Records, Category)
 from data_helper import date_datetime
 
-from common.peewee import Q
-from common.ui.util import uopen_file, raise_error, is_int
-from common.ui.table import F_TableWidget
-from common.ui.common import (F_Widget, FormLabel, Button, F_Label,
+# from Common.peewee import Q
+from Common.ui.util import uopen_file, raise_error, is_int
+from Common.ui.table import F_TableWidget
+from Common.ui.common import (F_Widget, FormLabel, Button, F_Label,
                               F_BoxTitle, LineEdit)
-
-from ui.record_new import RecordsNewViewWidget
 
 
 class RecordConsultationViewWidget(F_Widget):
@@ -85,7 +83,7 @@ class RecordConsultationViewWidget(F_Widget):
     def finder(self):
 
         self.current_categ = self.liste_categ[self.combo_categ.currentIndex()]
-        categ = unicode(self.current_categ),
+        categ = unicode(self.current_categ)
         value = unicode(self.search_field.text())
         self.table_resultat.refresh_(categ, value)
 
@@ -102,7 +100,7 @@ class ResultatTableWidget(F_TableWidget):
         self.display_vheaders = True
         # self.ecart = -250
         self.display_fixed = True
-        self.refresh_("", "")
+        self.refresh_("", "tous")
 
     def refresh_(self, categ, value):
 
@@ -120,6 +118,8 @@ class ResultatTableWidget(F_TableWidget):
         if categ in ["tous", "Tous"]:
             records = Records.all()
         else:
+            from Common.peewee import Q
+            records = Records.all()
             records = Records.filter(Q(category__name__icontains=categ) |
                                      Q(name__icontains=value))
         try:

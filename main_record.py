@@ -10,7 +10,7 @@ import gettext, gettext_windows
 
 from PyQt4.QtGui import QApplication
 
-from common.ui.window import F_Window
+from Common.ui.window import F_Window
 from ui.mainwindow import MainWindow
 
 from database import setup

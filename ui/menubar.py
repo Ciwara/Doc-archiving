@@ -8,9 +8,9 @@ from PyQt4.QtGui import (QMessageBox, QMenuBar, QIcon, QAction, QPixmap)
 from PyQt4.QtCore import SIGNAL, SLOT
 
 from configuration import Config
-from common.exports import export_database_as_file
-from common.ui.common import F_Widget
-from common.ui.login import LoginWidget
+from Common.exports import export_database_as_file
+from Common.ui.common import F_Widget
+from Common.ui.login import LoginWidget
 from ui.records import RecordsViewWidget
 from ui.record_consultation import RecordConsultationViewWidget
 from ui.help import HTMLEditor

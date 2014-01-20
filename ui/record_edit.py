@@ -14,8 +14,8 @@ from PyQt4.QtGui import (QIcon, QVBoxLayout, QFileDialog, QDialog, QTextEdit,
 from configuration import Config
 from model import Category
 
-from common.ui.util import raise_error, raise_success
-from common.ui.common import (F_Widget, F_PageTitle, Button_save, FormLabel,
+from Common.ui.util import raise_error, raise_success
+from Common.ui.common import (F_Widget, F_PageTitle, Button_save, FormLabel,
                               F_Label, LineEdit, IntLineEdit)
 
 

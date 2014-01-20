@@ -8,8 +8,8 @@ import os
 from datetime import datetime
 from py3compat import implements_to_string
 
-from common import peewee
-from common.models import Owner, BaseModel
+from Common import peewee
+from Common.models import Owner, BaseModel
 from configuration import Config
 
 FDATE = u"%c"
@@ -64,7 +64,7 @@ class Records(BaseModel):
         """ Rename file in banc docs  params: name file
             return newname"""
 
-        from common.ui.util import to_jstimestamp
+        from Common.ui.util import to_jstimestamp
         destination = Config.des_image_record
         newname = "{}{}".format(to_jstimestamp(datetime.now()),
                                 filename.replace(" ",""))

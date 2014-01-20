@@ -7,10 +7,10 @@ from __future__ import (unicode_literals, absolute_import, division, print_funct
 from PyQt4.QtGui import (QHBoxLayout, QGridLayout, QGroupBox, QIcon)
 
 from model import Owner
-from common.check_mac import get_mac, is_valide_mac
+from Common.check_mac import get_mac, is_valide_mac
 from configuration import Config
-from common.ui.util import SystemTrayIcon
-from common.ui.common import (F_Widget, F_PageTitle, FormLabel, PyTextViewer,
+from Common.ui.util import SystemTrayIcon
+from Common.ui.common import (F_Widget, F_PageTitle, FormLabel, PyTextViewer,
                               Button_menu, F_PageTitle, F_Label)
 from ui.admin import AdminViewWidget
 from ui.records import RecordsViewWidget
@@ -105,17 +105,16 @@ class HomeViewWidget(F_Widget):
         else:
             try:
                 owner = Owner.get(islog=True)
-                self.parent.active_menu_ad() if owner.group in self.root_permission else self.parent.active_menu()
+                self.parent.active_menu_ad()
             except:
                 return False
         self.change_main_context(page)
 
     def goto_consultation(self):
-        self.check_log(RecordConsultationViewWidget, permiss=self.root_permission)
+        self.check_log(RecordConsultationViewWidget)
 
     def goto_archi(self):
-        self.root_permission.append("user")
-        self.check_log(RecordsViewWidget, permiss=self.root_permission)
+        self.check_log(RecordsViewWidget)
 
     def goto_admin(self):
-        self.check_log(AdminViewWidget, permiss=self.root_permission)
+        self.check_log(AdminViewWidget)

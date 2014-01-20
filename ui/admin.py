@@ -7,12 +7,12 @@ from PyQt4.QtGui import (QVBoxLayout, QTableWidgetItem, QGridLayout, QIcon)
 from PyQt4.QtCore import QDate, Qt
 
 from model import Owner
-from common.peewee import Q
-from common.tabpane import tabbox
-from common.ui.util import is_int, formatted_number, date_on, show_date, date_end
-from common.ui.table import F_TableWidget
-from common.ui.edit_owner import EditOwnerViewWidget
-from common.ui.common import (F_Widget, F_PageTitle, LineEdit, FormatDate,
+from Common.peewee import Q
+from Common.tabpane import tabbox
+from Common.ui.util import is_int, formatted_number, date_on, show_date, date_end
+from Common.ui.table import F_TableWidget
+from Common.ui.edit_owner import EditOwnerViewWidget
+from Common.ui.common import (F_Widget, F_PageTitle, LineEdit, FormatDate,
                               Button, Button_export, FormLabel)
 
 from configuration import Config
@@ -48,7 +48,7 @@ class AdminViewWidget(F_Widget):
         self.setLayout(vbox)
 
     def goto_new_user(self):
-        from common.ui.new_user import NewUserViewWidget
+        from Common.ui.new_user import NewUserViewWidget
 
         self.parent.open_dialog(NewUserViewWidget, modal=True, go_home=False)
         # self.table_owner.refresh_()

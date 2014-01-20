@@ -8,7 +8,7 @@ from PyQt4.QtGui import QStatusBar
 
 from model import Owner
 from configuration import Config
-from common.ui.common import (F_Label)
+from Common.ui.common import (F_Label)
 
 
 class GStatusBar(QStatusBar):

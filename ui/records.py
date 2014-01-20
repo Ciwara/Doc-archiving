@@ -12,9 +12,9 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QIcon, QVBoxLayout, QFileDialog, QGridLayout, QTextEdit,
                          QTableWidgetItem, QPushButton, QCompleter)
 
-from common.ui.util import raise_success, raise_error
-from common.ui.table import F_TableWidget
-from common.ui.common import (F_Widget, F_PageTitle, Button_save, FormLabel,
+from Common.ui.util import raise_success, raise_error
+from Common.ui.table import F_TableWidget
+from Common.ui.common import (F_Widget, F_PageTitle, Button_save, FormLabel,
                               F_Label, LineEdit)
 from configuration import Config
 from model import Records, Category
