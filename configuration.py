@@ -14,6 +14,7 @@ class Config(Constants):
         Constants.__init__(self)
 
     LOGIN = True
+    LOGIN = False
 
     NAME_MAIN = "main_record.py"
     # ------------------------- Organisation --------------------------#

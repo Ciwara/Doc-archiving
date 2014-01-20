@@ -21,12 +21,16 @@ class MainWindow(FMainWindow):
     def __init__(self):
         FMainWindow.__init__(self)
 
-        self.setWindowIcon(QIcon.fromTheme('logo', QIcon(u"{}archive_.png".format(Config.img_media))))
+        self.setWindowIcon(QIcon.fromTheme('logo',
+                                           QIcon(u"{}archive_.png".format(Config.img_media))))
         self.statusbar = GStatusBar(self)
         self.setStatusBar(self.statusbar)
 
         if Config.LOGIN:
             self.page = LoginWidget
+        else:
+            from ui.home import HomeViewWidget
+            self.page = HomeViewWidget
 
         # self.page = RecordsViewWidget
         # self.page = RecordConsultationViewWidget

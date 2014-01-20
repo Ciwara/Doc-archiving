@@ -9,15 +9,13 @@ from PyQt4.QtGui import (QVBoxLayout, QHBoxLayout, QTableWidgetItem,
                          QMenu, QCompleter, QComboBox, QPushButton)
 from PyQt4.QtCore import QDate, Qt, QVariant, SIGNAL
 
-from configuration import Config
-from model import (Records, Category)
-from data_helper import date_datetime
-
-# from Common.peewee import Q
 from Common.ui.util import uopen_file, raise_error, is_int
 from Common.ui.table import F_TableWidget
 from Common.ui.common import (F_Widget, FormLabel, Button, F_Label,
                               F_BoxTitle, LineEdit)
+
+from configuration import Config
+from model import (Records, Category)
 
 
 class RecordConsultationViewWidget(F_Widget):
@@ -28,20 +26,21 @@ class RecordConsultationViewWidget(F_Widget):
                                            u"   Consultation des documents")
         self.parent = parent
 
-        vbox = QVBoxLayout(self)
-        gridbox = QGridLayout()
+        self.combo_categ = QComboBox()
+        all_category = Category()
+        all_category.name = "tous"
 
         self.liste_categ = Category.all()
+        self.liste_categ.append(all_category)
+        self.liste_categ.reverse()
 
-        self.combo_categ = QComboBox()
         for index in xrange(0, len(self.liste_categ)):
             op = self.liste_categ[index]
             sentence = u"%(name)s" % {'name': op.name}
             self.combo_categ.addItem(sentence, QVariant(op.id))
 
-        self.combo_categ.connect(self.combo_categ,
-                               SIGNAL("currentIndexChanged(int)"),
-                               self.finder)
+        self.combo_categ.connect(self.combo_categ, SIGNAL("currentIndexChanged(int)"),
+                                 self.finder)
 
         self.search_field = LineEdit()
         self.search_field.setToolTip("Recherche")
@@ -55,14 +54,7 @@ class RecordConsultationViewWidget(F_Widget):
         self.table_resultat = ResultatTableWidget(parent=self)
         self.table_info = InfoTableWidget(parent=self)
 
-        self.table_resultat.refresh_("Tous", "")
-        gridbox.addWidget(FormLabel(u"Categorie:"), 0, 0)
-        gridbox.addWidget(self.combo_categ, 1, 0)
-        gridbox.addWidget(self.vline, 0, 2, 2, 1)
-        gridbox.addWidget(FormLabel(u"Recherche:"), 0, 1)
-        gridbox.addWidget(self.search_field, 1, 1)
-        gridbox.setColumnStretch(3, 3)
-        gridbox.setRowStretch(2, 2)
+        # self.table_resultat.refresh_()
 
         splitter = QSplitter(Qt.Horizontal)
         splitter.setFrameShape(QFrame.StyledPanel)
@@ -76,14 +68,23 @@ class RecordConsultationViewWidget(F_Widget):
         splitter.addWidget(splitter_left)
         splitter.addWidget(splitter_rigth)
 
+        gridbox = QGridLayout()
+        gridbox.addWidget(FormLabel(u"Categorie:"), 0, 0)
+        gridbox.addWidget(self.combo_categ, 1, 0)
+        gridbox.addWidget(self.vline, 0, 2, 2, 1)
+        gridbox.addWidget(FormLabel(u"Recherche:"), 0, 1)
+        gridbox.addWidget(self.search_field, 1, 1)
+        gridbox.setColumnStretch(3, 3)
+        gridbox.setRowStretch(2, 2)
         gridbox.addWidget(splitter, 2, 0, 5, 4)
+
+        vbox = QVBoxLayout(self)
         vbox.addLayout(gridbox)
         self.setLayout(vbox)
 
     def finder(self):
 
-        self.current_categ = self.liste_categ[self.combo_categ.currentIndex()]
-        categ = unicode(self.current_categ)
+        categ = unicode(self.liste_categ[self.combo_categ.currentIndex()])
         value = unicode(self.search_field.text())
         self.table_resultat.refresh_(categ, value)
 
@@ -100,7 +101,7 @@ class ResultatTableWidget(F_TableWidget):
         self.display_vheaders = True
         # self.ecart = -250
         self.display_fixed = True
-        self.refresh_("", "tous")
+        self.refresh_("tous", "")
 
     def refresh_(self, categ, value):
 
@@ -115,13 +116,15 @@ class ResultatTableWidget(F_TableWidget):
 
     def set_data_for(self, categ, value):
         records = []
+        print("{} - {}".format(categ, value))
         if categ in ["tous", "Tous"]:
-            records = Records.all()
+            records = Records.select()
         else:
-            from Common.peewee import Q
-            records = Records.all()
-            records = Records.filter(Q(category__name__icontains=categ) |
-                                     Q(name__icontains=value))
+            records = Records.filter(category__name__icontains=categ)
+
+        from Common.peewee import Q
+        records = records.filter(Q(name__icontains=value))
+
         try:
             self.data = [("", record.category, record.name) for record in records]
         except AttributeError:
@@ -150,8 +153,7 @@ class InfoTableWidget(F_Widget):
         self.category = F_Label(" ")
         self.date = F_Label(" ")
         self.chow_doc = Button("")
-        self.chow_doc.setIcon(QIcon.fromTheme('document-new',
-                                              QIcon(u"{}logo.png".format(Config.img_cmedia))))
+        self.chow_doc.setIcon(QIcon(u"{}logo.png".format(Config.img_cmedia)))
 
         gridbox = QGridLayout()
         gridbox.addWidget(self.name, 1, 0)
