@@ -9,6 +9,7 @@ from PyQt4.QtGui import (QVBoxLayout, QHBoxLayout, QTableWidgetItem,
                          QMenu, QCompleter, QComboBox, QPushButton)
 from PyQt4.QtCore import QDate, Qt, QVariant, SIGNAL
 
+from Common.peewee import Q
 from Common.ui.util import uopen_file, raise_error, is_int
 from Common.ui.table import F_TableWidget
 from Common.ui.common import (F_Widget, FormLabel, Button, F_Label,
@@ -122,7 +123,6 @@ class ResultatTableWidget(F_TableWidget):
         else:
             records = Records.filter(category__name__icontains=categ)
 
-        from Common.peewee import Q
         records = records.filter(Q(name__icontains=value))
 
         try:
@@ -137,8 +137,9 @@ class ResultatTableWidget(F_TableWidget):
                                                                data, context)
 
     def click_item(self, row, column, *args):
-        self.choix = Records.filter(name=self.data[row][2]).get()
-        self.parent.table_info.refresh_(self.choix.id)
+        self.record = Records.filter(name=self.data[row][2],
+                                    category__name=self.data[row][1]).get()
+        self.parent.table_info.refresh_(self.record)
 
 
 class InfoTableWidget(F_Widget):
@@ -165,9 +166,9 @@ class InfoTableWidget(F_Widget):
         vbox.addLayout(gridbox)
         self.setLayout(vbox)
 
-    def refresh_(self, idd):
+    def refresh_(self, record):
 
-        self.record = Records.get(id=idd)
+        self.record = record
         self.name.setText(u"<h4>Nom du document: </h4> </br> <h6>{name}</h6>".format(name=self.record.name.title()))
         self.category.setText(u"<h4>Categorie: </h4> </br> <h6>{category}</h6>".format(category=self.record.category.display_name().title()))
         self.date.setText(u"<h4>Date de Création: </h4> </br> <h6>{date}</h6>".format(date=self.record.date.strftime(u"%x")))

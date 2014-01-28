@@ -73,7 +73,7 @@ class RecordsViewWidget(F_Widget):
     def import_image(self):
 
         self.path_filename = QFileDialog.getOpenFileName(self, "Open Image", "",
-                                        "Image Files (*.gif *.png *.jpg *.ico)")
+            "Documents (*.ppt *.txt *.odt *.ods *.xls *.xlsx *.gif *.png *.jpg *.doc *.docx)",)
         if self.path_filename:
             self.name_file = os.path.basename(u"{}".format(self.path_filename))
             self.path_.setText(unicode(self.name_file))

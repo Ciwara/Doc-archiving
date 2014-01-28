@@ -22,7 +22,7 @@ class MainWindow(FMainWindow):
         FMainWindow.__init__(self)
 
         self.setWindowIcon(QIcon.fromTheme('logo',
-                                           QIcon(u"{}archive_.png".format(Config.img_media))))
+                                           QIcon(u"{}archive.png".format(Config.img_media))))
         self.statusbar = GStatusBar(self)
         self.setStatusBar(self.statusbar)
 

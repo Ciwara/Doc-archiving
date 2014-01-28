@@ -83,7 +83,11 @@ class Records(BaseModel):
         if not os.path.exists(destination):
             os.mkdir(destination)
         dst =  u"{}/{}".format(destination, filename)
-        shutil.copyfile(path_filename, dst)
+        try:
+            shutil.copyfile(path_filename, dst)
+        except IOError:
+            print ("Veuillez changé le nom du fichier")
+
 
         return self.rename_doc(filename)
 
