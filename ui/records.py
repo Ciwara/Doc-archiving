@@ -22,6 +22,7 @@ from model import Records, Category
 from ui.record_edit import EditRecordsViewWidget
 from ui.record_delete import DeleteRecordsViewWidget
 
+
 class RecordsViewWidget(F_Widget):
 
     def __init__(self, record="", parent=0, *args, **kwargs):
@@ -42,7 +43,7 @@ class RecordsViewWidget(F_Widget):
         self.image = LineEdit()
         self.path_ = FormLabel("...")
 
-        completion_values =  [catg.name for catg in Category.all()]
+        completion_values = [catg.name for catg in Category.all()]
         completer = QCompleter(completion_values, parent=self)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
@@ -138,7 +139,7 @@ class RecordsTableWidget(F_TableWidget):
 
         self.parent = parent
         self.hheaders = [u"Category", u"Document", u"Modification", u"Suppression"]
-        self.stretch_columns = [0, 1,]
+        self.stretch_columns = [0, 1, ]
         self.align_map = {0: 'l', 1: 'l'}
         self.ecart = -250
         self.display_vheaders = True
@@ -151,7 +152,6 @@ class RecordsTableWidget(F_TableWidget):
         self._reset()
         self.set_data_for()
         self.refresh()
-
 
     def set_data_for(self):
         self.data = [(record.category, record.name, "", "")

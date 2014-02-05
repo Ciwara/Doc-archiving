@@ -11,8 +11,9 @@ class Constants(CConstants):
     def __init__(self):
         CConstants.__init__(self)
 
-        self.license.update({'00:24:54:f2:6d:9f': 'fad',})
+        self.license.update({'00:24:54:f2:6d:9f': 'fad'})
 
+    ORG_AUT = u"Copyright © 2014"
     des_image_record = "ARMOIRE"
     # Si la persionne n'a pas tout payé
     credit = 17
@@ -23,3 +24,7 @@ class Constants(CConstants):
     APP_VERSION = u"1.0"
     APP_DATE = u"01/2014"
     img_media = "media/images/"
+    # file_img = 'cimages/'
+    # # deployment
+    # if os.path.exists(file_img):
+    #     img_cmedia = file_img

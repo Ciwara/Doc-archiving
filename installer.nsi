@@ -5,13 +5,13 @@
 ; Start
 
   !define MUI_PRODUCT "GARCHIV"
-  !define MUI_FILE "mmain"
+  !define MUI_FILE "main_record"
   !define MUI_VERSION "Ver. 1.0.0"
   !define MUI_BRANDINGTEXT "${MUI_PRODUCT} ${MUI_VERSION}"
   !define IMAGES "images"
+  !define CIMAGES "cimages"
   !define MEDIA "media"
-  !define CIMAGES "common\cmedia\images"
-  !define ARMOIRE "armoire"
+  !define CIMAGES_PATH "C:\Users\reg\Documents\works\Common\${CIMAGES}"
   ;CRCCheck On
 
   !include "${NSISDIR}\Contrib\Modern UI\System.nsh"
@@ -58,8 +58,7 @@ Section "install"
   File /r *.dll
   File /r *.manifest
   File /r ${IMAGES}
-  ;File /r ${CIMAGES}
-  ;File /r ${ARMOIRE}
+  File /r ${CIMAGES_PATH}
 
 ;create desktop shortcut
   CreateShortCut "$DESKTOP\${MUI_PRODUCT}.lnk" "$INSTDIR\${MUI_FILE}.exe" parameters "$INSTDIR\${MEDIA}\${IMAGES}\${MUI_ICON}"
@@ -96,7 +95,10 @@ delete $INSTDIR\*.exe
 delete $INSTDIR\*.lib
 delete $INSTDIR\*.zip
 delete $INSTDIR\*.pdf
+
+RMDir /r $INSTDIR\build
 RMDir /r $INSTDIR\${MEDIA}
+RMDir /r $INSTDIR\${CIMAGES}
 
 ;Delete Start Menu Shortcuts
   Delete "$DESKTOP\${MUI_PRODUCT}.lnk"

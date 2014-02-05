@@ -14,6 +14,7 @@ from configuration import Config
 
 FDATE = u"%c"
 
+
 @implements_to_string
 class Category(BaseModel):
 
@@ -22,7 +23,7 @@ class Category(BaseModel):
     def __str__(self):
         return "{name}".format(name=self.name)
 
-    def display_name (self):
+    def display_name(self):
         return "{}".format(self.name)
 
     @classmethod
@@ -47,7 +48,7 @@ class Records(BaseModel):
     def __str__(self):
         return "{}({})".format(self.name, self.category)
 
-    def display_name (self):
+    def display_name(self):
         return u"{}".format(self.name)
 
     def save(self):
@@ -56,7 +57,6 @@ class Records(BaseModel):
         super(Records, self).save()
 
     def get_doc_file_mane(self, filename):
-        print(filename)
         ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
         return "{}{}".format(os.path.join(ROOT_DIR + "Archiving/", Config.des_image_record), filename)
 
@@ -66,8 +66,8 @@ class Records(BaseModel):
 
         from Common.ui.util import to_jstimestamp
         destination = Config.des_image_record
-        newname = "{}{}".format(to_jstimestamp(datetime.now()),
-                                filename.replace(" ",""))
+        newname = "{}.{}".format(to_jstimestamp(datetime.now()),
+                                 filename.split(".")[-1])
         filename = "{}/{}".format(destination, filename)
         newname = "{}/{}".format(destination, newname)
         os.rename(filename, newname)
@@ -82,12 +82,8 @@ class Records(BaseModel):
         destination = Config.des_image_record
         if not os.path.exists(destination):
             os.mkdir(destination)
-        dst =  u"{}/{}".format(destination, filename)
-        try:
-            shutil.copyfile(path_filename, dst)
-        except IOError:
-            print ("Veuillez changé le nom du fichier")
-
+        dst = u"{}/{}".format(destination, filename)
+        shutil.copyfile(path_filename, dst)
 
         return self.rename_doc(filename)
 

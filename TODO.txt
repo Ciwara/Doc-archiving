@@ -1,0 +1,20 @@
+* backup du dossier armoir
+* cryptage du dossier armoire
+*
+
+===================================
+# Gestion records
+-----------------------------
+    - refresh of the category in records view after save
+    -
+
+==================================
+# Consultation records
+-----------------------------
+    Improve the research OK
+    change icon of the bottom show document
+
+==================================
+# Model
+-----------------------------
+ Grere IOError dans import_doc
