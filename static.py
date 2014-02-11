@@ -24,7 +24,6 @@ class Constants(CConstants):
     APP_VERSION = u"1.0"
     APP_DATE = u"01/2014"
     img_media = "media/images/"
-    # file_img = 'cimages/'
-    # # deployment
-    # if os.path.exists(file_img):
-    #     img_cmedia = file_img
+
+    APP_LOGO = "{}logo.jpg".format(img_media)
+    APP_LOGO_ICO = "{}logo.ico".format(img_media)

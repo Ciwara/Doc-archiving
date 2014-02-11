@@ -20,7 +20,7 @@ class MenuBar(QMenuBar, F_Widget):
     def __init__(self, parent=None, admin=False, *args, **kwargs):
         QMenuBar.__init__(self, parent=parent, *args, **kwargs)
 
-        self.setWindowIcon(QIcon(QPixmap("{}logo.png".format(Config.img_cmedia))))
+        self.setWindowIcon(QIcon(QPixmap("{}".format(Config.APP_LOGO_ICO))))
 
         self.parent = parent
         #Menu File
@@ -43,14 +43,14 @@ class MenuBar(QMenuBar, F_Widget):
         goto_ = self.addMenu(u"&Aller a")
 
         # Records
-        record = QAction(QIcon("{}archive_add.png".format(Config.img_cmedia)),
+        record = QAction(QIcon("{}archive_add.png".format(Config.img_media)),
                          u"Gestion des documents", self)
         record.setShortcut("Ctrl+P")
         self.connect(record, SIGNAL("triggered()"), self.goto_record)
         goto_.addAction(record)
 
         # consultation
-        consultation = QAction(QIcon("{}archive.png".format(Config.img_cmedia)),
+        consultation = QAction(QIcon("{}archive.png".format(Config.img_media)),
                                u"Consultation", self)
         consultation.setShortcut("Ctrl+C")
         self.connect(consultation, SIGNAL("triggered()"), self.goto_consul)
@@ -90,7 +90,7 @@ class MenuBar(QMenuBar, F_Widget):
         QMessageBox.about(self,
                                 u"À propos",
                                 u"<h2>%(app_name)s version: %(version)s</h2>"
-                                u"<i>Logiciel de suivi de stock</i>"
+                                u"<i>Logiciel de gestion d'archive.</i>"
                                 u"<ul><li></li>"
                                 u"<li><b>Developpeur</b>: %(autor)s</li>"
                                 u"<li><b>Adresse: </b>%(adress)s</li>"

@@ -13,8 +13,8 @@ from configuration import Config
 
 from ui.menubar import MenuBar
 from ui.statusbar import GStatusBar
-from ui.records import RecordsViewWidget
-from ui.record_consultation import RecordConsultationViewWidget
+# from ui.records import RecordsViewWidget
+# from ui.record_consultation import RecordConsultationViewWidget
 
 
 class MainWindow(FMainWindow):
@@ -22,7 +22,7 @@ class MainWindow(FMainWindow):
         FMainWindow.__init__(self)
 
         self.setWindowIcon(QIcon.fromTheme('logo',
-                                           QIcon(u"{}archive.png".format(Config.img_media))))
+                                           QIcon(u"{}".format(Config.APP_LOGO))))
         self.statusbar = GStatusBar(self)
         self.setStatusBar(self.statusbar)
 
@@ -36,7 +36,6 @@ class MainWindow(FMainWindow):
         # self.page = RecordConsultationViewWidget
 
         self.change_context(self.page)
-
 
     def exit(self):
         self.logout()

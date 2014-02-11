@@ -6,7 +6,7 @@
 
   !define MUI_PRODUCT "GARCHIV"
   !define MUI_FILE "main_record"
-  !define MUI_VERSION "Ver. 1.0.0"
+  !define MUI_VERSION "Ver. 1.0.1"
   !define MUI_BRANDINGTEXT "${MUI_PRODUCT} ${MUI_VERSION}"
   !define IMAGES "images"
   !define CIMAGES "cimages"

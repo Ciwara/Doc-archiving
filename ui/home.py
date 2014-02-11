@@ -29,9 +29,9 @@ class HomeViewWidget(F_Widget):
         self.parentWidget().setWindowTitle(Config.APP_NAME + blanck + "MENU GENERAL")
 
         self.title = F_PageTitle(u"{} MENU GENERAL {}".format(blanck, blanck))
-        self.title.setStyleSheet("background: url({}logo) no-repeat scroll 20px 50px #CCCCCC;"
+        self.title.setStyleSheet("background: url({}) no-repeat scroll 20px 50px #fff;"
                                  "border-radius: 14px 14px 4px 4px;"
-                                 "font: 15pt 'URW Bookman L';".format(Config.img_media))
+                                 "font: 15pt 'URW Bookman L';".format(Config.APP_LOGO))
 
         self.consultation = Button_menu(_("Consultation"))
         self.consultation.clicked.connect(self.goto_consultation)
