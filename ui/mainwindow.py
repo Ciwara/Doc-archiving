@@ -5,7 +5,6 @@ from __future__ import (unicode_literals, absolute_import, division, print_funct
 
 from PyQt4.QtGui import QIcon
 
-from Common.ui.login import LoginWidget
 from Common.ui.common import FMainWindow
 
 from model import Owner
@@ -26,16 +25,15 @@ class MainWindow(FMainWindow):
         self.statusbar = GStatusBar(self)
         self.setStatusBar(self.statusbar)
 
-        if Config.LOGIN:
-            self.page = LoginWidget
-        else:
-            from ui.home import HomeViewWidget
-            self.page = HomeViewWidget
-
-        # self.page = RecordsViewWidget
-        # self.page = RecordConsultationViewWidget
-
+        from ui.home import HomeViewWidget
+        self.page = HomeViewWidget
         self.change_context(self.page)
+
+    def restart(self):
+        self.logout()
+        from main_record import main
+        self.close()
+        main()
 
     def exit(self):
         self.logout()

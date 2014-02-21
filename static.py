@@ -23,7 +23,7 @@ class Constants(CConstants):
     APP_NAME = "Gestion d'archive"
     APP_VERSION = u"1.0"
     APP_DATE = u"01/2014"
-    img_media = "media/images/"
+    img_media = "static/images/"
 
-    APP_LOGO = "{}logo.jpg".format(img_media)
+    APP_LOGO = "{}logo.png".format(img_media)
     APP_LOGO_ICO = "{}logo.ico".format(img_media)

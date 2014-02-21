@@ -82,7 +82,6 @@ class RecordsViewWidget(F_Widget):
     def add_prod(self):
         ''' add operation '''
         name = unicode(self.name.toPlainText())
-        # code = unicode(self.code.text())
         category = unicode(self.category.text())
 
         self.name.setStyleSheet("")

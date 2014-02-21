@@ -10,10 +10,10 @@ from PyQt4.QtCore import SIGNAL, SLOT
 from configuration import Config
 from Common.exports import export_database_as_file
 from Common.ui.common import F_Widget
-from Common.ui.login import LoginWidget
 from ui.records import RecordsViewWidget
 from ui.record_consultation import RecordConsultationViewWidget
 from ui.help import HTMLEditor
+
 
 class MenuBar(QMenuBar, F_Widget):
 
@@ -61,11 +61,13 @@ class MenuBar(QMenuBar, F_Widget):
         help_.addAction(QIcon("{}help.png".format(Config.img_cmedia)),
                         "Aide", self.goto_help)
         help_.addAction(QIcon("{}info.png".format(Config.img_cmedia)),
-                               u"À propos", self.goto_about)
+                              u"À propos", self.goto_about)
 
     def logout(self):
-        self.parent.logout()
-        self.change_main_context(LoginWidget)
+        from Common.ui.login import LoginWidget
+        # self.parent.restart()
+        # self.change_main_context(LoginWidget)
+        LoginWidget().exec_()
 
     def goto_record(self):
         self.change_main_context(RecordsViewWidget)

@@ -22,7 +22,8 @@ from model import (Records, Category)
 class RecordConsultationViewWidget(F_Widget):
 
     def __init__(self, record="", parent=0, *args, **kwargs):
-        super(RecordConsultationViewWidget, self).__init__(parent=parent, *args, **kwargs)
+        super(RecordConsultationViewWidget, self).__init__(parent=parent,
+                                                           *args, **kwargs)
         self.parentWidget().setWindowTitle(Config.NAME_ORGA +
                                            u"   Consultation des documents")
         self.parent = parent
@@ -138,7 +139,8 @@ class ResultatTableWidget(F_TableWidget):
 
     def click_item(self, row, column, *args):
         self.record = Records.filter(name=self.data[row][2],
-                                    category__name=self.data[row][1]).get()
+                                     category__name=self.data[row][1]).get()
+        self.parent.table_info.chow_doc.setEnabled(True)
         self.parent.table_info.refresh_(self.record)
 
 
@@ -152,32 +154,51 @@ class InfoTableWidget(F_Widget):
         self.refresh()
         self.name = F_Label(" ")
         self.category = F_Label(" ")
+        self.taille = F_Label(" ")
         self.date = F_Label(" ")
-        self.chow_doc = Button("")
-        self.chow_doc.setIcon(QIcon(u"{}logo.png".format(Config.img_cmedia)))
+        self.chow_doc = Button("Ouvrir")
+        self.chow_doc.setIcon(QIcon.fromTheme('document-print-preview', QIcon('')))
+        self.chow_doc.setEnabled(False)
 
         gridbox = QGridLayout()
-        gridbox.addWidget(self.name, 1, 0)
-        gridbox.addWidget(self.date, 2, 0)
-        gridbox.addWidget(self.category, 4, 0, 1, 2)
-        gridbox.addWidget(self.chow_doc, 5, 0, 1, 5)
+        gridbox.addWidget(self.name, 0, 0, 1, 9)
+        gridbox.addWidget(self.category, 1, 0, 1, 9)
+        gridbox.addWidget(self.taille, 2, 0, 1, 9)
+        gridbox.addWidget(self.date, 4, 0, 1, 9)
+        gridbox.addWidget(self.chow_doc, 7, 0, 1, 9)
 
         vbox = QVBoxLayout()
         vbox.addLayout(gridbox)
         self.setLayout(vbox)
 
     def refresh_(self, record):
-
         self.record = record
-        self.name.setText(u"<h4>Nom du document: </h4> </br> <h6>{name}</h6>".format(name=self.record.name.title()))
-        self.category.setText(u"<h4>Categorie: </h4> </br> <h6>{category}</h6>".format(category=self.record.category.display_name().title()))
-        self.date.setText(u"<h4>Date de Création: </h4> </br> <h6>{date}</h6>".format(date=self.record.date.strftime(u"%x")))
+        self.name.setText(u"<p><b>Description:</b> {name}<p>"
+                          u"<p> <b>Nom du fichier:</b> {fname}<p> "
+                          .format(name=self.record.name.title(),
+                                  fname=self.record.doc_file_mane))
+        self.category.setText(u"<p><b>Categorie: </b> {category}</p>".format(category=self.record.category.display_name()))
+        self.taille.setText(u"<p><b>Taille: </b>{taille}</p>".format(taille=self.record.get_taille))
+        dates = """ <h2><b>Dates</h2>
+                    <ul>
+                    <p><b>création: </b> {mtime}</p
+                    <p><b>modification: </b> {ctime}</p>
+                    <p><b>dernière consultation: </b> {atime}</p></ul>
+                """
+        self.date.setText(dates.format(ctime=self.record.created_date,
+                                       mtime=self.record.modification_date,
+                                       atime=self.record.last_date_access))
         self.chow_doc.clicked.connect(self.print_doc)
-        self.chow_doc.setText(u" Afficher ")
-        self.chow_doc.setStyleSheet("")
-        self.chow_doc.setStyleSheet("background: url({chow_doc}) no-repeat scroll 20px 110px #CCCCCC;"
-                                     "width: 55px".format(chow_doc=self.record.doc_file_mane))
 
+        self.css = """
+            QWidget{ background: QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                    stop: 0 #eef, stop: 1 #ccf);
+            }
+            """
+        self.name.setStyleSheet(self.css)
+        self.taille.setStyleSheet(self.css)
+        self.category.setStyleSheet(self.css)
+        self.date.setStyleSheet(self.css)
 
     def print_doc(self):
         """ """
