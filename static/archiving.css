@@ -1,0 +1,42 @@
+
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+    height: auto;
+    width: 140px;
+}
+
+input[type="text"].search {
+    width: 20em;
+}
+
+li.ui-state-hover.droppable {
+    border-right: 3px solid #333333;
+}
+
+li.ui-state-active {
+    background-color: #dedede;
+    border-right: 3px solid red !important;
+}
+
+#alertbox {
+    position: fixed;
+    float: right;
+    top: 1em;
+    right: 1.5em;
+    max-width: 30%;
+}
+
+td.td-icon {
+    width: 10px;
+}
+
+td.td-link:hover {
+    cursor: pointer;
+}
+.sidebarmenu {
+
+    position: fixed;
+    /*float: right;*/
+    top: 1em;
+    /*right: 1.5em;*/
+    max-width: 30%;
+}
