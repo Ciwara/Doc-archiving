@@ -25,7 +25,7 @@ class EditRecordsViewWidget(QDialog, F_Widget):
 
         self.record = record
 
-        self.name = QTextEdit(self.record.name)
+        self.description = QTextEdit(self.record.description)
         self.image = os.path.basename(u"{}".format(self.record.doc_file_mane))
         self.path_ = FormLabel(self.image)
         try:
@@ -42,7 +42,7 @@ class EditRecordsViewWidget(QDialog, F_Widget):
 
         gridbox = QGridLayout()
         gridbox.addWidget(F_Label(u"Désignation: "), 0, 0)
-        gridbox.addWidget(self.name, 1, 0, 1, 2)
+        gridbox.addWidget(self.description, 1, 0, 1, 2)
         gridbox.addWidget(F_Label(u"Categorie: "), 2, 0)
         gridbox.addWidget(self.category, 2, 1)
         gridbox.addWidget(F_Label(u"Image: "), 3, 0)
@@ -52,7 +52,7 @@ class EditRecordsViewWidget(QDialog, F_Widget):
         gridbox.addWidget(butt, 5, 1)
 
         vbox = QVBoxLayout()
-        vbox.addWidget(F_PageTitle(u"Modification des produits"))
+        vbox.addWidget(F_PageTitle(u"Modification des documents"))
         vbox.addLayout(gridbox)
         self.setLayout(vbox)
 
@@ -61,36 +61,33 @@ class EditRecordsViewWidget(QDialog, F_Widget):
 
     def edit_prod(self):
 
-        name = unicode(self.name.toPlainText())
+        description = unicode(self.description.toPlainText())
         category = unicode(self.category.text())
 
-        self.name.setStyleSheet("")
-        if name == "":
-            self.name.setStyleSheet("background-color: rgb(255, 235, 235);")
-            self.name.setToolTip(u"Ce champs est obligatoire.")
+        self.description.setStyleSheet("")
+        if description == "":
+            self.description.setStyleSheet("background-color: rgb(255, 235, 235);")
+            self.description.setToolTip(u"Ce champs est obligatoire.")
             return False
 
         record = self.record
-        record.name = name
+        record.description = description
         # prev_image = unicode(self.record.doc_file_mane)
 
-        try:
-            record.category = Category.create(name=category)
-        except sqlite3.IntegrityError:
-            record.category = Category.get(name=category)
+        record.category = Category.get_or_create(category)
 
         try:
             from ui.records import RecordsViewWidget
             record.save()
             self.change_main_context(RecordsViewWidget)
             self.cancel()
-            raise_success(u"Confirmation", u"Le produit <b>%s</b> "
-                          u"a été mise à jour" % record.name)
+            raise_success(u"Confirmation", u"Le document <b>%s</b> "
+                          u"a été mise à jour" % record.description)
         except sqlite3.IntegrityError as e:
-            if u"name" in e:
-                self.name.setStyleSheet("background-color: rgb(255, 235, 235);")
-                self.name.setToolTip(u"Le produit {} existe déjà dans la basse "
-                                     u"de donnée.".fromat(record.name))
+            if u"description" in e:
+                self.description.setStyleSheet("background-color: rgb(255, 235, 235);")
+                self.description.setToolTip(u"Le document {} existe déjà dans la basse "
+                                     u"de donnée.".fromat(record.description))
                 return False
             if u"code_prod" in e:
                 self.code.setStyleSheet("background-color: rgb(255, 235, 235);")

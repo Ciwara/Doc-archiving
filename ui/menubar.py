@@ -11,6 +11,7 @@ from configuration import Config
 from Common.exports import export_database_as_file
 from Common.ui.common import F_Widget
 from ui.records import RecordsViewWidget
+from ui.admin import AdminViewWidget
 from ui.record_consultation import RecordConsultationViewWidget
 from ui.help import HTMLEditor
 
@@ -29,10 +30,16 @@ class MenuBar(QMenuBar, F_Widget):
         export = file_.addMenu(u"&Export des données")
         export.addAction(u"base de données de sauvegarde", self.goto_export_db)
 
-        file_.addAction(u"Déconnexion", self.logout)
+        # logout
+        lock = QAction(QIcon("{}login.png".format(Config.img_cmedia)), "Verrouiller", self)
+        # lock = QAction(QIcon.fromTheme('security-medium', QIcon('')), "Verrouiller", self)
+        lock.setShortcut("Ctrl+l")
+        lock.setToolTip(u"Verrouile l'application")
+        self.connect(lock, SIGNAL("triggered()"), self.logout)
+        file_.addAction(lock)
 
         # Exit
-        exit_ = QAction(QIcon("{}exit.png".format(Config.img_cmedia)), "Exit", self)
+        exit_ = QAction(QIcon.fromTheme('application-exit', QIcon('')), "Exit", self)
         exit_.setShortcut("Ctrl+Q")
         exit_.setToolTip(u"Quiter l'application")
         self.connect(exit_, SIGNAL("triggered()"), self.parentWidget(),
@@ -56,11 +63,18 @@ class MenuBar(QMenuBar, F_Widget):
         self.connect(consultation, SIGNAL("triggered()"), self.goto_consul)
         goto_.addAction(consultation)
 
+        # consultation
+        admin = QAction(QIcon.fromTheme('emblem-system', QIcon('')),
+                               u"admin", self)
+        admin.setShortcut("Ctrl+a")
+        self.connect(admin, SIGNAL("triggered()"), self.goto_admin)
+        goto_.addAction(admin)
+
         #Menu Aide
         help_ = self.addMenu(u"Aide")
-        help_.addAction(QIcon("{}help.png".format(Config.img_cmedia)),
+        help_.addAction(QIcon.fromTheme('help-contents', QIcon('')),
                         "Aide", self.goto_help)
-        help_.addAction(QIcon("{}info.png".format(Config.img_cmedia)),
+        help_.addAction(QIcon.fromTheme('help-about', QIcon('')),
                               u"À propos", self.goto_about)
 
     def logout(self):
@@ -89,19 +103,20 @@ class MenuBar(QMenuBar, F_Widget):
 
     #About
     def goto_about(self):
-        QMessageBox.about(self,
-                                u"À propos",
-                                u"<h2>%(app_name)s version: %(version)s</h2>"
-                                u"<i>Logiciel de gestion d'archive.</i>"
-                                u"<ul><li></li>"
-                                u"<li><b>Developpeur</b>: %(autor)s</li>"
-                                u"<li><b>Adresse: </b>%(adress)s</li>"
-                                u"<li><b>Tel: </b> %(phone)s</li>"
-                                u"<li><b>E-mail: </b> %(email)s<br/></li>"
-                                u"<li>© 2012 Kalanène s.à.r.l</li>"
-                                % {"email": Config.EMAIL_AUT,
-                                  "app_name": Config.APP_NAME,
-                                  "adress": Config.ADRESS_AUT,
-                                  "autor": Config.AUTOR,
-                                  "version": Config.APP_VERSION,
-                                  "phone": Config.TEL_AUT})
+        QMessageBox.about(self, u"À propos",
+                                u""" <h2>{app_name}  version: {version} </h2>
+                                <hr>
+                                <h4><i>Logiciel de gestion d'archive.</i></h4>
+                                <ul><li></li> <li><b>Developpeur</b>: {autor} </li>
+                                <li><b>Adresse: </b>{adress} </li>
+                                <li><b>Tel: </b> {phone} </li>
+                                <li><b>E-mail: </b> {email} <br/></li>
+                                <li>{org_out}</li>
+                                <hr>
+                                """.format(email=Config.EMAIL_AUT,
+                                          app_name=Config.APP_NAME,
+                                          adress=Config.ADRESS_AUT,
+                                          autor=Config.AUTOR,
+                                          version=Config.APP_VERSION,
+                                          phone=Config.TEL_AUT,
+                                          org_out=Config.ORG_AUT))

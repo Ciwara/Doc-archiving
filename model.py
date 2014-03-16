@@ -4,7 +4,8 @@
 # maintainer: Fad
 from __future__ import (unicode_literals, absolute_import, division, print_function)
 
-import os, time
+import os
+import time
 from datetime import datetime
 from py3compat import implements_to_string
 
@@ -17,6 +18,8 @@ FDATE = u"%c"
 
 @implements_to_string
 class Category(BaseModel):
+    class Meta:
+        ordering = (('name', 'desc'))
 
     name = peewee.CharField(max_length=30, unique=True)
 
@@ -29,50 +32,54 @@ class Category(BaseModel):
     @classmethod
     def get_or_create(cls, text):
         try:
-            catg = cls.objects.get(name=text)
+            catg = cls.get(name=text)
         except cls.DoesNotExist:
-            catg = cls.objects.create(name=text)
+            catg = cls.create(name=text)
         return catg
 
 
 @implements_to_string
 class Records(BaseModel):
+    class Meta:
+        ordering = (('date', 'desc'))
+
 
     date = peewee.DateTimeField(default=datetime.now())
-    name = peewee.CharField(max_length=50, unique=True)
-    doc_file_mane = peewee.CharField(max_length=200, null=True, blank=True)
-    doc_file_slug = peewee.CharField(max_length=200, null=True, blank=True, unique=True)
-    category = peewee.ForeignKeyField(Category, null=True, blank=True)
+    description = peewee.TextField(null=True, unique=True)
+    doc_file_mane = peewee.CharField(max_length=200, null=True)
+    doc_file_slug = peewee.CharField(max_length=200, null=True, unique=True)
+    category = peewee.ForeignKeyField(Category, null=True)
     trash = peewee.BooleanField(default=False)
 
     def __str__(self):
-        return "{}({})".format(self.name, self.category)
+        return "{}({})".format(self.description, self.category)
 
     def display_name(self):
-        return u"{}".format(self.name)
+        return u"Categorie: {catg} Nom: {slug}".format(catg=self.category,
+                                                       slug=self.doc_file_mane)
 
-    def save(self):
-        """ """
-        super(Records, self).save()
+    # def save(self):
+    #     """ """
+    #     super(Records, self).save()
 
-    def get_doc_file_mane(self, filename):
-        ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath('__file__')))
-        return "{}{}".format(os.path.join(ROOT_DIR + "Archiving/",
-                                          Config.des_image_record), filename)
+    # def get_doc_file_mane(self, filename):
+    #     ROOT_DIR = os.path.dirname(os.path.abspath('__file__'))
+    #     return os.path.join(os.path.join(ROOT_DIR, Config.des_image_record), filename)
 
     def rename_doc(self, filename):
         """ Rename file in banc docs  params: name file
             return newname"""
         destination = Config.des_image_record
-        filename = "{}/{}".format(destination, filename)
-        newname = "{}/{}".format(destination, self.slug_mane_doc())
+        filename = os.path.join(destination, filename)
+        newname = os.path.join(destination, self.slug_mane_doc())
         os.rename(filename, newname)
         return newname
 
     def slug_mane_doc(self):
         from Common.ui.util import to_jstimestamp
-        return "{id}_{catg}_{name}".format(id=self.id, catg=self.category,
-                                           name=to_jstimestamp(datetime.now()))
+        return "{catg}_{name}.{extension}".format(catg=self.category,
+                                      name=to_jstimestamp(datetime.now()),
+                                      extension=self.doc_file_mane.split(".")[-1])
 
     def import_doc(self, path_filename, filename):
         """ Copy the file, rename file in banc and return new name of the doc
@@ -82,7 +89,7 @@ class Records(BaseModel):
         destination = Config.des_image_record
         if not os.path.exists(destination):
             os.mkdir(destination)
-        dst = u"{}/{}".format(destination, filename)
+        dst = os.path.join(destination, filename)
         shutil.copyfile(path_filename, dst)
 
         return self.rename_doc(filename)
@@ -94,6 +101,15 @@ class Records(BaseModel):
             os.remove(self.doc_file_slug)
         except TypeError:
             pass
+
+    def istrash(self):
+        """ """
+        self.trash = True
+        self.save()
+
+    def isnottrash(self):
+        self.trash = False
+        self.save()
 
     @property
     def os_info(self):

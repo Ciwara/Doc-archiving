@@ -18,15 +18,6 @@ from configuration import Config
 
 from database import setup
 
-
-class Window(MainWindow):
-    def __init__(self):
-        MainWindow.__init__(self)
-        self.setWindowFlags(Qt.FramelessWindowHint)
-
-        self.setAutoFillBackground(True)
-        self.setBackgroundRole(QtGui.QPalette.Highlight)
-
 app = QApplication(sys.argv)
 
 def main():

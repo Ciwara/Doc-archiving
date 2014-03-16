@@ -10,7 +10,7 @@ import sqlite3
 
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QIcon, QVBoxLayout, QFileDialog, QGridLayout, QTextEdit,
-                         QTableWidgetItem, QPushButton, QCompleter)
+                         QTableWidgetItem, QPushButton, QCompleter, QMessageBox)
 
 from Common.ui.util import raise_success, raise_error
 from Common.ui.table import F_TableWidget
@@ -20,7 +20,6 @@ from configuration import Config
 from model import Records, Category
 
 from ui.record_edit import EditRecordsViewWidget
-from ui.record_delete import DeleteRecordsViewWidget
 
 
 class RecordsViewWidget(F_Widget):
@@ -29,7 +28,7 @@ class RecordsViewWidget(F_Widget):
         super(RecordsViewWidget, self).__init__(parent=parent, *args, **kwargs)
 
         self.parentWidget().setWindowTitle(Config.APP_NAME +
-                                           u"    GESTION PRODUITS")
+                                           u"    GESTION D'ARCHIVE")
 
         self.parent = parent
 
@@ -38,7 +37,7 @@ class RecordsViewWidget(F_Widget):
         self.table_record = RecordsTableWidget(parent=self)
         tablebox.addWidget(self.table_record)
 
-        self.name = QTextEdit()
+        self.description = QTextEdit()
         self.category = LineEdit()
         self.image = LineEdit()
         self.path_ = FormLabel("...")
@@ -51,7 +50,7 @@ class RecordsViewWidget(F_Widget):
 
         gridbox = QGridLayout()
         gridbox.addWidget(F_Label(u"Désignation: "), 0, 0)
-        gridbox.addWidget(self.name, 1, 0, 1, 2)
+        gridbox.addWidget(self.description, 1, 0, 1, 2)
         gridbox.addWidget(F_Label(u"Categorie: "), 2, 0)
         gridbox.addWidget(self.category, 2, 1)
         butt_parco = QPushButton(QIcon.fromTheme('document-open', QIcon('')), "")
@@ -74,28 +73,27 @@ class RecordsViewWidget(F_Widget):
     def import_image(self):
 
         self.path_filename = QFileDialog.getOpenFileName(self, "Open Image", "",
-            "Documents (*.ppt *.txt *.odt *.ods *.xls *.xlsx *.gif *.png *.jpg *.doc *.docx)",)
+            "Documents ({})".format(Config.DOC_SUPPORT),)
         if self.path_filename:
             self.name_file = os.path.basename(u"{}".format(self.path_filename))
             self.path_.setText(unicode(self.name_file))
 
     def add_prod(self):
         ''' add operation '''
-        name = unicode(self.name.toPlainText())
+        description = unicode(self.description.toPlainText())
         category = unicode(self.category.text())
+        print(description)
 
-        self.name.setStyleSheet("")
+        self.description.setStyleSheet("")
         self.category.setStyleSheet("")
-        if name == "":
-            self.name.setStyleSheet("background-color: rgb(255, 235, 235);")
-            self.name.setToolTip(u"Ce champs est obligatoire.")
+        if description == "":
+            self.description.setStyleSheet("background-color: rgb(255, 235, 235);")
+            self.description.setToolTip(u"Ce champs est obligatoire.")
             return False
         record = Records()
-        record.name = name
-        try:
-            record.category = Category.create(name=category)
-        except sqlite3.IntegrityError:
-            record.category = Category.get(name=category)
+        record.description = description
+        record.category = Category.get_or_create(category)
+
         try:
             record.doc_file_mane = unicode(self.name_file)
             record.doc_file_slug = record.import_doc(unicode(self.path_filename),
@@ -114,20 +112,20 @@ class RecordsViewWidget(F_Widget):
 
         try:
             record.save()
-            self.name.clear()
+            self.description.clear()
             self.category.clear()
             self.path_.clear()
             self.table_record.refresh_()
-            raise_success(_(u"Confirmation"), _(u"The document {} "
-                            u" a été bien enregistré".format(record.name)))
+            raise_success(_(u"Confirmation"), _(u"Le document {} "
+                            u" a été bien enregistré".format(record.description)))
         except sqlite3.IntegrityError as e:
             err = u"%s" % e
-            if u"name" in err:
-                self.name.setStyleSheet("background-color: "
+            if u"description" in err:
+                self.description.setStyleSheet("background-color: "
                                                "rgb(255, 235, 235);")
-                self.name.setToolTip(u"Le produit {} "
-                                        u"existe déjà dans la basse de "
-                                        u"donnée.".format(record.name))
+                self.description.setToolTip(u"Le produit {} "
+                                        u"document déjà dans la basse de "
+                                        u"donnée.".format(record.description))
                 return False
 
 
@@ -153,8 +151,8 @@ class RecordsTableWidget(F_TableWidget):
         self.refresh()
 
     def set_data_for(self):
-        self.data = [(record.category, record.name, "", "")
-                     for record in Records.select().order_by(('category', 'asc'))]
+        self.data = [(record.category, record.description, "", "")
+                     for record in Records.select().where(Records.trash==False).order_by(Records.category.asc())]
 
     def _item_for_data(self, row, column, data, context=None):
         if column == 2:
@@ -165,13 +163,19 @@ class RecordsTableWidget(F_TableWidget):
                                                               data, context)
 
     def click_item(self, row, column, *args):
-        record = Records.filter(name=self.data[row][1]).get()
+        record = Records.filter(description=self.data[row][1]).get()
         modified_column = 2
         if column == modified_column:
             self.parent.open_dialog(EditRecordsViewWidget, modal=True, record=record)
             # self.parent.change_main_context(RecordsViewWidget)
         if column == 3:
-            self.parent.open_dialog(DeleteRecordsViewWidget, modal=True,
-                                    record=record)
+            self.title = F_PageTitle()
+            reply = QMessageBox.question(self, 'Confirmation de le suppression',
+                self.tr("<h4>Voulez vous vraiment le supprimer?<h4>"),
+                 QMessageBox.Yes, QMessageBox.No)
+
+            if reply == QMessageBox.Yes:
+                record.istrash()
+                self.refresh_()
         else:
             return

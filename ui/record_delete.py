@@ -26,7 +26,7 @@ class DeleteRecordsViewWidget(QDialog, F_Widget):
         title_hbox.addWidget(self.title)
         report_hbox = QGridLayout()
 
-        report_hbox.addWidget(F_Label(u"Le porduit {} ".format(self.record.display_name())))
+        report_hbox.addWidget(F_Label(u"Le document {} ".format(self.record.display_name())))
         #delete and cancel hbox
         Button_hbox = QHBoxLayout()
 
@@ -54,4 +54,4 @@ class DeleteRecordsViewWidget(QDialog, F_Widget):
         self.record.remove_doc()
         self.cancel()
         self.change_main_context(RecordsViewWidget)
-        raise_success(u"Confirmation", u"<b>le produit à été bien supprimé</b>")
+        raise_success(u"Confirmation", u"<b>le document à été bien supprimé</b>")

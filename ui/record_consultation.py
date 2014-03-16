@@ -9,8 +9,7 @@ from PyQt4.QtGui import (QVBoxLayout, QHBoxLayout, QTableWidgetItem,
                          QMenu, QCompleter, QComboBox, QPushButton)
 from PyQt4.QtCore import QDate, Qt, QVariant, SIGNAL
 
-from Common.peewee import Q
-from Common.ui.util import uopen_file, raise_error, is_int
+from Common.ui.util import uopen_file, is_int
 from Common.ui.table import F_TableWidget
 from Common.ui.common import (F_Widget, FormLabel, Button, F_Label,
                               F_BoxTitle, LineEdit)
@@ -97,51 +96,55 @@ class ResultatTableWidget(F_TableWidget):
         F_TableWidget.__init__(self, parent=parent, *args, **kwargs)
 
         self.parent = parent
-        self.hheaders = ["i", u"Categorie", u"Documents"]
+        self.hheaders = ["i", u"Categorie", u"Documents", "Ouvrir"]
         self.stretch_columns = [2]
         self.align_map = {1: 'l'}
         self.display_vheaders = True
-        # self.ecart = -250
         self.display_fixed = True
         self.refresh_("tous", "")
 
     def refresh_(self, categ, value):
 
-        # pw = self.width() / len(self.hheaders)
-        pw = 100
-        self.setColumnWidth(0, 20)
-        self.setColumnWidth(1, pw * 2)
-        self.setColumnWidth(2, pw)
         self._reset()
         self.set_data_for(categ, value)
         self.refresh()
+        pw = 100
+        self.setColumnWidth(0, 40)
+        self.setColumnWidth(1, pw)
+        self.setColumnWidth(2, pw * 3)
+        self.setColumnWidth(3, 40)
 
     def set_data_for(self, categ, value):
         records = []
-        print("{} - {}".format(categ, value))
         if categ in ["tous", "Tous"]:
             records = Records.select()
         else:
-            records = Records.filter(category__name__icontains=categ)
+            # todo
+            # A refaire la recherce par categorie
+            records = Records.select().where(Category.name.contains("{}".format(categ)))
 
-        records = records.filter(Q(name__icontains=value))
+        records = Records.select().where(Records.description.contains(value))
 
         try:
-            self.data = [("", record.category, record.name) for record in records]
+            self.data = [("", record.category, record.description, "") for record in records]
         except AttributeError:
             pass
 
     def _item_for_data(self, row, column, data, context=None):
         if column == 0:
             return QTableWidgetItem(QIcon(u"{}info.png".format(Config.img_cmedia)), "")
+        if column == 3:
+            return QTableWidgetItem(QIcon.fromTheme('document-open', QIcon('')), "O")
         return super(ResultatTableWidget, self)._item_for_data(row, column,
                                                                data, context)
 
     def click_item(self, row, column, *args):
-        self.record = Records.filter(name=self.data[row][2],
-                                     category__name=self.data[row][1]).get()
-        self.parent.table_info.chow_doc.setEnabled(True)
-        self.parent.table_info.refresh_(self.record)
+        self.record = Records.filter(description=self.data[row][2]).get()
+        if column == 0:
+            self.parent.table_info.refresh_(self.record)
+        if column == 3:
+            uopen_file(self.record.doc_file_slug)
+
 
 
 class InfoTableWidget(F_Widget):
@@ -152,20 +155,20 @@ class InfoTableWidget(F_Widget):
         self.parent = parent
 
         self.refresh()
-        self.name = F_Label(" ")
+        self.description = F_Label(" ")
         self.category = F_Label(" ")
         self.taille = F_Label(" ")
         self.date = F_Label(" ")
-        self.chow_doc = Button("Ouvrir")
-        self.chow_doc.setIcon(QIcon.fromTheme('document-print-preview', QIcon('')))
-        self.chow_doc.setEnabled(False)
+        # self.chow_doc = Button("Ouvrir")
+        # self.chow_doc.setIcon(QIcon.fromTheme('document-open', QIcon('')))
+        # self.chow_doc.setEnabled(False)
 
         gridbox = QGridLayout()
-        gridbox.addWidget(self.name, 0, 0, 1, 9)
+        gridbox.addWidget(self.description, 0, 0, 1, 9)
         gridbox.addWidget(self.category, 1, 0, 1, 9)
         gridbox.addWidget(self.taille, 2, 0, 1, 9)
         gridbox.addWidget(self.date, 4, 0, 1, 9)
-        gridbox.addWidget(self.chow_doc, 7, 0, 1, 9)
+        # gridbox.addWidget(self.chow_doc, 7, 0, 1, 9)
 
         vbox = QVBoxLayout()
         vbox.addLayout(gridbox)
@@ -173,9 +176,9 @@ class InfoTableWidget(F_Widget):
 
     def refresh_(self, record):
         self.record = record
-        self.name.setText(u"<p><b>Description:</b> {name}<p>"
+        self.description.setText(u"<p><b>Description:</b> {description}<p>"
                           u"<p> <b>Nom du fichier:</b> {fname}<p> "
-                          .format(name=self.record.name.title(),
+                          .format(description=self.record.description.title(),
                                   fname=self.record.doc_file_mane))
         self.category.setText(u"<p><b>Categorie: </b> {category}</p>".format(category=self.record.category.display_name()))
         self.taille.setText(u"<p><b>Taille: </b>{taille}</p>".format(taille=self.record.get_taille))
@@ -188,19 +191,14 @@ class InfoTableWidget(F_Widget):
         self.date.setText(dates.format(ctime=self.record.created_date,
                                        mtime=self.record.modification_date,
                                        atime=self.record.last_date_access))
-        self.chow_doc.clicked.connect(self.print_doc)
+        # self.chow_doc.clicked.connect(self.print_doc)
 
         self.css = """
             QWidget{ background: QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1,
                     stop: 0 #eef, stop: 1 #ccf);
             }
             """
-        self.name.setStyleSheet(self.css)
+        self.description.setStyleSheet(self.css)
         self.taille.setStyleSheet(self.css)
         self.category.setStyleSheet(self.css)
         self.date.setStyleSheet(self.css)
-
-    def print_doc(self):
-        """ """
-        uopen_file(self.record.doc_file_slug)
-        return False

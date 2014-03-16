@@ -14,8 +14,9 @@ class Config(Constants):
         Constants.__init__(self)
 
     LOGIN = True
-    # LOGIN = False
-
+    LOGIN = False
+    DOC_SUPPORT = "*.ppt *.txt *.odt *.ods *.xls *.xlsx *.gif *.png \
+                   *.jpg *.doc *.docx *.pdf *.jpeg"
     NAME_MAIN = "main_record.py"
     # ------------------------- Organisation --------------------------#
 
@@ -23,6 +24,6 @@ class Config(Constants):
     NAME_ORGA = u"Demo "
     CONTACT_ORGA = u"Bamako-Rep. du Mali"
     TEL_ORGA = u""
-    ADRESS_ORGA = u"Bamako djiélibougou"
+    ADRESS_ORGA = u"Bamako Boulkassoumbougou"
     BP = u"B.P:177"
     EMAIL_ORGA = u"demo@gmail.com"
