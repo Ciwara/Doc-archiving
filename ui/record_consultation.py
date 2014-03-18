@@ -119,11 +119,9 @@ class ResultatTableWidget(F_TableWidget):
         if categ in ["tous", "Tous"]:
             records = Records.select()
         else:
-            # todo
-            # A refaire la recherce par categorie
-            records = Records.select().where(Category.name.contains("{}".format(categ)))
+            records = Records.filter(category__name=categ)
 
-        records = Records.select().where(Records.description.contains(value))
+        records = records.select().where(Records.description.contains(value))
 
         try:
             self.data = [("", record.category, record.description, "") for record in records]
@@ -144,7 +142,6 @@ class ResultatTableWidget(F_TableWidget):
             self.parent.table_info.refresh_(self.record)
         if column == 3:
             uopen_file(self.record.doc_file_slug)
-
 
 
 class InfoTableWidget(F_Widget):

@@ -12,10 +12,10 @@ from Common.ui.common import (F_Widget, F_PageTitle, Button, F_Label)
 from Common.ui.util import raise_success
 
 
-class DeleteRecordsViewWidget(QDialog, F_Widget):
-    def __init__(self, record, parent, *args, **kwargs):
+class SettingsViewWidget(QDialog, F_Widget):
+    def __init__(self, parent, *args, **kwargs):
         QDialog.__init__(self, parent, *args, **kwargs)
-        super(DeleteRecordsViewWidget, self).__init__(parent=parent, *args, **kwargs)
+        super(SettingsViewWidget, self).__init__(parent=parent, *args, **kwargs)
         self.record = record
 
         self.setWindowTitle(u"Confirmation de le suppression")

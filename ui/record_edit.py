@@ -28,11 +28,7 @@ class EditRecordsViewWidget(QDialog, F_Widget):
         self.description = QTextEdit(self.record.description)
         self.image = os.path.basename(u"{}".format(self.record.doc_file_mane))
         self.path_ = FormLabel(self.image)
-        try:
-            category = Category.get(name=self.record.category).name
-        except:
-            category = ""
-        self.category = LineEdit(category)
+        self.category = LineEdit(self.record.category.name)
 
         completion_values =  [catg.name for catg in Category.all()]
         completer = QCompleter(completion_values, parent=self)

@@ -10,6 +10,7 @@ from PyQt4.QtCore import SIGNAL, SLOT
 from configuration import Config
 from Common.exports import export_database_as_file
 from Common.ui.common import F_Widget
+from Common.ui.login_manage import LoginManageWidget
 from ui.records import RecordsViewWidget
 from ui.admin import AdminViewWidget
 from ui.record_consultation import RecordConsultationViewWidget
@@ -52,7 +53,7 @@ class MenuBar(QMenuBar, F_Widget):
         # Records
         record = QAction(QIcon("{}archive_add.png".format(Config.img_media)),
                          u"Gestion des documents", self)
-        record.setShortcut("Ctrl+P")
+        record.setShortcut("Ctrl+R")
         self.connect(record, SIGNAL("triggered()"), self.goto_record)
         goto_.addAction(record)
 
@@ -63,12 +64,25 @@ class MenuBar(QMenuBar, F_Widget):
         self.connect(consultation, SIGNAL("triggered()"), self.goto_consul)
         goto_.addAction(consultation)
 
-        # consultation
-        admin = QAction(QIcon.fromTheme('emblem-system', QIcon('')),
-                               u"admin", self)
-        admin.setShortcut("Ctrl+a")
-        self.connect(admin, SIGNAL("triggered()"), self.goto_admin)
-        goto_.addAction(admin)
+        # Comptes utilisateur
+        admin = self.addMenu(u"Admistration")
+        gest_user = QAction(QIcon.fromTheme('emblem-system', QIcon('')),
+                               u"Gestion d'utilisateur", self)
+        gest_user.setShortcut("Ctrl+U")
+        self.connect(gest_user, SIGNAL("triggered()"), self.goto_gest_user)
+        admin.addAction(gest_user)
+
+        admin_ = QAction(QIcon.fromTheme('emblem-system', QIcon('')),
+                               u"Gestion Admistration", self)
+        admin_.setShortcut("Ctrl+A")
+        self.connect(admin_, SIGNAL("triggered()"), self.goto_admin)
+        admin.addAction(admin_)
+
+        licience = QAction(QIcon.fromTheme('emblem-system', QIcon('')),
+                               u"Licience", self)
+        licience.setShortcut("Ctrl+L")
+        self.connect(licience, SIGNAL("triggered()"), self.goto_licience)
+        admin.addAction(licience)
 
         #Menu Aide
         help_ = self.addMenu(u"Aide")
@@ -96,6 +110,16 @@ class MenuBar(QMenuBar, F_Widget):
     # Admin
     def goto_admin(self):
         self.change_main_context(AdminViewWidget)
+
+    # G. licience
+    def goto_licience(self):
+        print("licience")
+        # self.change_main_context(AdminViewWidget)
+
+
+    # G user
+    def goto_gest_user(self):
+        self.change_main_context(LoginManageWidget)
 
     #Aide
     def goto_help(self):
