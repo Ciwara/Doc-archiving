@@ -4,18 +4,18 @@
 
 from datetime import date
 from PyQt4.QtGui import (QVBoxLayout, QTableWidgetItem, QGridLayout, QIcon,
-                         QCheckBox, QMessageBox)
+                         QCheckBox, QMessageBox, QTextEdit)
 from PyQt4.QtCore import QDate, Qt, SIGNAL
 
-from model import Owner, Records
+from model import Owner, Records, Settings
 from Common.tabpane import tabbox
-from Common.ui.util import is_int, formatted_number, date_on, show_date, date_end
+from Common.ui.util import (is_int, formatted_number, date_on, show_date,
+                            date_end, raise_success, raise_error)
 from Common.ui.table import F_TableWidget
-from Common.ui.edit_owner import EditOwnerViewWidget
-from Common.ui.common import (F_Widget, F_PageTitle, LineEdit, FormatDate,
-                              Button, Button_export, FormLabel)
+from Common.ui.common import (F_Widget, F_PageTitle, LineEdit, Button,
+                              Button_save, FormLabel, IntLineEdit)
 
-from configuration import Config
+from static import Constants
 
 
 class AdminViewWidget(F_Widget):
@@ -25,21 +25,14 @@ class AdminViewWidget(F_Widget):
 
         self.parent = parent
 
-        self.parentWidget().setWindowTitle(Config.APP_NAME + u"    ADMINISTRATION")
+        self.parentWidget().setWindowTitle(Constants.APP_NAME + u"    ADMINISTRATION")
 
-        butt = Button(_(u"Créer un nouvel utilisateur"))
-        butt.setIcon(QIcon.fromTheme('save',
-                                     QIcon(u"{}user_add.png".format(Config.img_cmedia))))
-        butt.clicked.connect(self.goto_new_user)
 
         editbox = QGridLayout()
-        editbox.addWidget(butt, 0, 1, 1, 1)
-        table_owner = QVBoxLayout()
-        self.title_owner = F_PageTitle(_(u"Les utilisateurs "))
-        self.table_owner = OwnerTableWidget(parent=self)
-        table_owner.addWidget(self.title_owner)
-        table_owner.addLayout(editbox)
-        table_owner.addWidget(self.table_owner)
+        table_config = QVBoxLayout()
+        self.table_config = SettingsTableWidget(parent=self)
+        table_config.addLayout(editbox)
+        table_config.addWidget(self.table_config)
 
         self.bttrestor = Button(_(u"Restaurer"))
         self.bttrestor.clicked.connect(self.restorseleted)
@@ -58,7 +51,7 @@ class AdminViewWidget(F_Widget):
         table_trash.addWidget(self.table_trash)
 
         tab_widget = tabbox((table_trash, _(u"Corbeille")),
-                            (table_owner, _(u"Gestion d'utilisateurs")),
+                            (table_config, _(u"Gestion de l'organisation")),
                             )
 
         vbox = QVBoxLayout()
@@ -86,9 +79,8 @@ class AdminViewWidget(F_Widget):
 
     def goto_new_user(self):
         from Common.ui.new_user import NewUserViewWidget
-
         self.parent.open_dialog(NewUserViewWidget, modal=True, go_home=False)
-        # self.table_owner.refresh_()
+        # self.table_config.refresh_()
 
 
 class TrashTableWidget(F_TableWidget):
@@ -142,44 +134,82 @@ class TrashTableWidget(F_TableWidget):
     def click_item(self, row, column, *args):
         pass
 
-class OwnerTableWidget(F_TableWidget):
+class SettingsTableWidget(F_Widget):
 
     def __init__(self, parent, *args, **kwargs):
-        F_TableWidget.__init__(self, parent=parent, *args, **kwargs)
-        self.hheaders = [_(u"Nom d'utilisateur"), _(u"Tel."), _(u"Groupe"),
-                         _(u"Status"), _(u"Modification")]
+        super(F_Widget, self).__init__(parent=parent, *args, **kwargs)
+
+        self.organisation = Settings.get(id=1)
         self.parent = parent
-        self.set_data_for()
-        self.stretch_columns = [0]
-        self.align_map = {0: 'l'}
-        self.max_rows = 100
-        self.refresh()
+        vbox = QVBoxLayout()
+        # vbox.addWidget(F_PageTitle(u"Utilisateur: %s " % self.organisation.name_orga))
 
-    def refresh_(self):
-        self._reset()
-        self.set_data_for()
-        self.refresh()
+        self.checked = QCheckBox("Active")
+        if self.organisation.login:
+            self.checked.setCheckState(Qt.Checked)
+        # self.setCellWidget(nb_rows, 2, checked)
+        self.checked.setToolTip(u"""Cocher si vous voulez pour deactive
+                                le login continue à utiliser le systeme""")
+        self.name_orga = LineEdit(self.organisation.name_orga)
+        self.phone = IntLineEdit(str(self.organisation.phone))
+        self.bp = LineEdit(self.organisation.bp)
+        self.adress_org = QTextEdit(self.organisation.adress_org)
+        self.email_org = LineEdit(self.organisation.email_org)
 
-    def set_data_for(self):
-        self.data = [(ow.username, ow.phone, ow.group, ow.isactive, "")
-                     for ow in Owner.select().where((Owner.group=="user") | (Owner.group=="admin"))]
+        formbox = QVBoxLayout()
+        editbox = QGridLayout()
 
-    def _item_for_data(self, row, column, data, context=None):
+        editbox.addWidget(FormLabel(u"Non de l'organisation: "), 0, 0)
+        editbox.addWidget(self.name_orga, 0, 1)
+        editbox.addWidget(FormLabel(u"Activer le login"), 1, 0)
+        editbox.addWidget(self.checked, 1, 1)
+        editbox.addWidget(FormLabel(u"B.P:"), 2, 0)
+        editbox.addWidget(self.bp, 2, 1)
+        editbox.addWidget(FormLabel(u"Tel:"), 3, 0)
+        editbox.addWidget(self.phone, 3, 1)
+        editbox.addWidget(FormLabel(u"E-mail:"), 4, 0)
+        editbox.addWidget(self.email_org, 4, 1)
+        editbox.addWidget(FormLabel(u"Adresse complete:"), 5, 0)
+        editbox.addWidget(self.adress_org, 5, 1)
 
-        if column == 3 and self.data[row][3] == 1:
-            return QTableWidgetItem(QIcon.fromTheme('user-available', QIcon('')), u"")
-        if column == 3 and self.data[row][3] == 0:
-            return QTableWidgetItem(QIcon.fromTheme('user-offline', QIcon('')), u"")
-        if column == 4:
-            return QTableWidgetItem(QIcon(u"{}edit_user.png".format(Config.img_cmedia)), u"")
+        butt = Button_save(u"Enregistrer")
+        butt.clicked.connect(self.save_edit)
+        editbox.addWidget(butt, 8, 1)
 
-        return super(OwnerTableWidget, self)._item_for_data(row, column,
-                                                            data, context)
+        formbox.addLayout(editbox)
+        vbox.addLayout(formbox)
+        self.setLayout(vbox)
 
-    def click_item(self, row, column, *args):
-        column_ = 4
-        if column == column_:
-            self.parent.open_dialog(EditOwnerViewWidget, modal=True,
-                                    owner=Owner.get(username=self.data[row][0]))
+    def save_edit(self):
+        ''' add operation '''
+        name_orga = unicode(self.name_orga.text())
+        bp = unicode(self.bp.text())
+        email_org = unicode(self.email_org.text())
+        phone = unicode(self.phone.text())
+        adress_org = unicode(self.adress_org.toPlainText())
+
+        if self.check_impty:
+            login = False
+            org = Settings.get(id=self.organisation.id)
+            if self.checked.checkState() == Qt.Checked:
+                login = True
+            org.phone = phone
+            org.name_orga = name_orga
+            org.email_org = email_org
+            org.bp = bp
+            org.adress_org = adress_org
+            org.login = login
+            org.save()
+            raise_success(u"Confirmation", u"Le Compte %s "
+                          u"a été mise à jour" % org.name_orga)
         else:
-            return
+            raise_error(u"Error", u"Mot de passe pas correct")
+
+    def check_impty(self):
+        flag = True
+        for field in [self.name_orga, self.phone, self.bp, self.email_org]:
+            if field.text() == "":
+                flag = False
+        return flag
+
+

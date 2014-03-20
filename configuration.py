@@ -13,17 +13,23 @@ class Config(Constants):
     def __init__(self):
         Constants.__init__(self)
 
-    LOGIN = True
-    LOGIN = False
-    DOC_SUPPORT = "*.ppt *.txt *.odt *.ods *.xls *.xlsx *.gif *.png \
-                   *.jpg *.doc *.docx *.pdf *.jpeg"
-    NAME_MAIN = "main_record.py"
+
+
     # ------------------------- Organisation --------------------------#
 
-    APP_NAME = "Gestion d'archivage"
-    NAME_ORGA = u"Demo "
-    CONTACT_ORGA = u"Bamako-Rep. du Mali"
-    TEL_ORGA = u""
-    ADRESS_ORGA = u"Bamako Boulkassoumbougou"
-    BP = u"B.P:177"
-    EMAIL_ORGA = u"demo@gmail.com"
+    from model import Settings
+    try:
+        sttg = Settings.get(id=1)
+        LOGIN = sttg.login
+        NAME_ORGA = sttg.name_orga #u"Demo "
+        TEL_ORGA = sttg.phone #u""
+        ADRESS_ORGA = sttg.adress_org #u"Bamako Boulkassoumbougou"
+        BP = sttg.bp #u"B.P:177"
+        EMAIL_ORGA = sttg.email_org #u"demo@gmail.com"
+    except:
+        LOGIN = True
+        NAME_ORGA = u"Demo "
+        TEL_ORGA = u""
+        ADRESS_ORGA = u"Bamako Boulkassoumbougou"
+        BP = u"B.P:177"
+        EMAIL_ORGA =u"demo@gmail.com"

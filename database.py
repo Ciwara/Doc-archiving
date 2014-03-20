@@ -5,7 +5,7 @@
 from __future__ import (unicode_literals, absolute_import,
                         division, print_function)
 
-from model import (Records, Owner, Category)
+from model import (Records, Owner, Category, Settings, SettingsAdmin)
 
 
 def setup(drop_tables=False):
@@ -15,7 +15,9 @@ def setup(drop_tables=False):
 
     for model in [Records,
                   Owner,
-                  Category,]:
+                  Category,
+                  Settings,
+                  SettingsAdmin,]:
         if drop_tables:
             model.drop_table()
         if not model.table_exists():
@@ -23,6 +25,6 @@ def setup(drop_tables=False):
             did_create = True
 
     if did_create:
-        from fixture import init_fuxture
+        from Common.fixture import init_fuxture
         print(u"---- Creation de la BD -----")
         init_fuxture()

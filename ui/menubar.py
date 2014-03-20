@@ -11,6 +11,7 @@ from configuration import Config
 from Common.exports import export_database_as_file
 from Common.ui.common import F_Widget
 from Common.ui.login_manage import LoginManageWidget
+from Common.ui.license_view import LicenseViewWidget
 from ui.records import RecordsViewWidget
 from ui.admin import AdminViewWidget
 from ui.record_consultation import RecordConsultationViewWidget
@@ -78,11 +79,11 @@ class MenuBar(QMenuBar, F_Widget):
         self.connect(admin_, SIGNAL("triggered()"), self.goto_admin)
         admin.addAction(admin_)
 
-        licience = QAction(QIcon.fromTheme('emblem-system', QIcon('')),
+        license = QAction(QIcon.fromTheme('emblem-system', QIcon('')),
                                u"Licience", self)
-        licience.setShortcut("Ctrl+L")
-        self.connect(licience, SIGNAL("triggered()"), self.goto_licience)
-        admin.addAction(licience)
+        license.setShortcut("Ctrl+L")
+        self.connect(license, SIGNAL("triggered()"), self.goto_license)
+        admin.addAction(license)
 
         #Menu Aide
         help_ = self.addMenu(u"Aide")
@@ -111,10 +112,9 @@ class MenuBar(QMenuBar, F_Widget):
     def goto_admin(self):
         self.change_main_context(AdminViewWidget)
 
-    # G. licience
-    def goto_licience(self):
-        print("licience")
-        # self.change_main_context(AdminViewWidget)
+    # G. license
+    def goto_license(self):
+        self.open_dialog(LicenseViewWidget, modal=True)
 
 
     # G user

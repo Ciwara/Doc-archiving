@@ -10,8 +10,9 @@ from datetime import datetime
 from py3compat import implements_to_string
 
 from Common import peewee
-from Common.models import Owner, BaseModel
-from configuration import Config
+from Common.models import Owner, BaseModel, Settings, SettingsAdmin
+
+from static import Constants
 
 FDATE = u"%c"
 
@@ -58,18 +59,14 @@ class Records(BaseModel):
         return u"Categorie: {catg} Nom: {slug}".format(catg=self.category,
                                                        slug=self.doc_file_mane)
 
-    # def save(self):
-    #     """ """
-    #     super(Records, self).save()
-
     # def get_doc_file_mane(self, filename):
     #     ROOT_DIR = os.path.dirname(os.path.abspath('__file__'))
-    #     return os.path.join(os.path.join(ROOT_DIR, Config.des_image_record), filename)
+    #     return os.path.join(os.path.join(ROOT_DIR, Constants.des_image_record), filename)
 
     def rename_doc(self, filename):
         """ Rename file in banc docs  params: name file
             return newname"""
-        destination = Config.des_image_record
+        destination = Constants.des_image_record
         filename = os.path.join(destination, filename)
         newname = os.path.join(destination, self.slug_mane_doc())
         os.rename(filename, newname)
@@ -86,7 +83,7 @@ class Records(BaseModel):
             created folder banc doc if not existe
         """
         import shutil
-        destination = Config.des_image_record
+        destination = Constants.des_image_record
         if not os.path.exists(destination):
             os.mkdir(destination)
         dst = os.path.join(destination, filename)
