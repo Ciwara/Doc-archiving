@@ -8,7 +8,7 @@ from PyQt4.QtGui import (QHBoxLayout, QGridLayout, QGroupBox, QIcon, QTextEdit,
                          QPixmap)
 
 from model import Owner, SettingsAdmin
-from Common.check_mac import get_mac, is_valide_mac
+from Common.check_mac import get_mac
 from static import Constants
 from configuration import Config
 from Common.ui.util import SystemTrayIcon, raise_success, raise_error

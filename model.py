@@ -10,7 +10,7 @@ from datetime import datetime
 from py3compat import implements_to_string
 
 from Common import peewee
-from Common.models import Owner, BaseModel, Settings, SettingsAdmin
+from Common.models import (BaseModel, Owner, Settings, SettingsAdmin, Version)
 
 from static import Constants
 
@@ -58,10 +58,6 @@ class Records(BaseModel):
     def display_name(self):
         return u"Categorie: {catg} Nom: {slug}".format(catg=self.category,
                                                        slug=self.doc_file_mane)
-
-    # def get_doc_file_mane(self, filename):
-    #     ROOT_DIR = os.path.dirname(os.path.abspath('__file__'))
-    #     return os.path.join(os.path.join(ROOT_DIR, Constants.des_image_record), filename)
 
     def rename_doc(self, filename):
         """ Rename file in banc docs  params: name file

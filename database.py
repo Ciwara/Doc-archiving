@@ -5,7 +5,7 @@
 from __future__ import (unicode_literals, absolute_import,
                         division, print_function)
 
-from model import (Records, Owner, Category, Settings, SettingsAdmin)
+from model import (Records, Owner, Category, Settings, SettingsAdmin, Version)
 
 
 def setup(drop_tables=False):
@@ -17,7 +17,8 @@ def setup(drop_tables=False):
                   Owner,
                   Category,
                   Settings,
-                  SettingsAdmin,]:
+                  SettingsAdmin,
+                  Version]:
         if drop_tables:
             model.drop_table()
         if not model.table_exists():

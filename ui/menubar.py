@@ -8,7 +8,7 @@ from PyQt4.QtGui import (QMessageBox, QMenuBar, QIcon, QAction, QPixmap)
 from PyQt4.QtCore import SIGNAL, SLOT
 
 from configuration import Config
-from Common.exports import export_database_as_file
+from Common.exports import export_database_as_file, export_backup, import_backup
 from Common.ui.common import F_Widget
 from Common.ui.login_manage import LoginManageWidget
 from Common.ui.license_view import LicenseViewWidget
@@ -31,10 +31,12 @@ class MenuBar(QMenuBar, F_Widget):
         # Export
         export = file_.addMenu(u"&Export des données")
         export.addAction(u"base de données de sauvegarde", self.goto_export_db)
+        # backup = file_.addMenu(u"&Backup")
+        export.addAction(u"Backup", self.export_backup)
+        export.addAction(u"import", self.import_backup)
 
         # logout
         lock = QAction(QIcon("{}login.png".format(Config.img_cmedia)), "Verrouiller", self)
-        # lock = QAction(QIcon.fromTheme('security-medium', QIcon('')), "Verrouiller", self)
         lock.setShortcut("Ctrl+l")
         lock.setToolTip(u"Verrouile l'application")
         self.connect(lock, SIGNAL("triggered()"), self.logout)
@@ -108,6 +110,13 @@ class MenuBar(QMenuBar, F_Widget):
     def goto_export_db(self):
         export_database_as_file()
 
+    def export_backup(self):
+        export_backup(folder=Config.des_image_record,
+                      dst_folder=Config.ARMOIRE)
+
+    def import_backup(self):
+        import_backup(folder=Config.des_image_record,
+                      dst_folder=Config.ARMOIRE)
     # Admin
     def goto_admin(self):
         self.change_main_context(AdminViewWidget)
@@ -128,19 +137,28 @@ class MenuBar(QMenuBar, F_Widget):
     #About
     def goto_about(self):
         QMessageBox.about(self, u"À propos",
-                                u""" <h2>{app_name}  version: {version} </h2>
+                                u""" <h2>{app_name}  version: {version_app} </h2>
                                 <hr>
                                 <h4><i>Logiciel de gestion d'archive.</i></h4>
                                 <ul><li></li> <li><b>Developpeur</b>: {autor} </li>
-                                <li><b>Adresse: </b>{adress} </li>
-                                <li><b>Tel: </b> {phone} </li>
-                                <li><b>E-mail: </b> {email} <br/></li>
-                                <li>{org_out}</li>
+                                    <li><b>Adresse: </b>{adress} </li>
+                                    <li><b>Tel: </b> {phone} </li>
+                                    <li><b>E-mail: </b> {email} <br/></li>
+                                    <li>{org_out}</li>
+                                </ul>
                                 <hr>
+                                <h3>Base de données</h3>
+                                <ul>
+                                    <li>Date de mise à jour: {m_date_db}</li>
+                                    <li>{version_db}</li>
+                                </ul>
                                 """.format(email=Config.EMAIL_AUT,
                                           app_name=Config.APP_NAME,
                                           adress=Config.ADRESS_AUT,
                                           autor=Config.AUTOR,
-                                          version=Config.APP_VERSION,
+                                          version_app=Config.APP_VERSION,
                                           phone=Config.TEL_AUT,
-                                          org_out=Config.ORG_AUT))
+                                          org_out=Config.ORG_AUT,
+                                          version_db=Config.DB_VERS.display_name(),
+                                          m_date_db=Config.DB_VERS.date.strftime("%c")
+                                          ))

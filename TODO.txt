@@ -1,6 +1,6 @@
-* backup du dossier armoir
+* backup du dossier armoir  OK
 * cryptage du dossier armoire
-*
+* Import du backup
 
 ===================================
 # Gestion records
@@ -17,4 +17,4 @@
 ==================================
 # Model
 -----------------------------
- Grere IOError dans import_doc
+ Grere IOError dans import_doc   OK

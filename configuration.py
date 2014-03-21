@@ -17,7 +17,7 @@ class Config(Constants):
 
     # ------------------------- Organisation --------------------------#
 
-    from model import Settings
+    from model import Settings, Version
     try:
         sttg = Settings.get(id=1)
         LOGIN = sttg.login
@@ -33,3 +33,8 @@ class Config(Constants):
         ADRESS_ORGA = u"Bamako Boulkassoumbougou"
         BP = u"B.P:177"
         EMAIL_ORGA =u"demo@gmail.com"
+
+    try:
+        DB_VERS = Version().get(id=1)
+    except:
+        pass

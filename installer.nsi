@@ -10,7 +10,7 @@
   !define MUI_BRANDINGTEXT "${MUI_PRODUCT} ${MUI_VERSION}"
   !define IMAGES "images"
   !define CIMAGES "cimages"
-  !define MEDIA "media"
+  !define MEDIA "static"
   !define CIMAGES_PATH "C:\Users\reg\Documents\works\Common\${CIMAGES}"
   ;CRCCheck On
 
