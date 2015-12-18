@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# encoding=utf-8
+# -*- coding: utf-8 -*-
 # maintainer: Fad
 from __future__ import (unicode_literals, absolute_import, division, print_function)
 
@@ -15,11 +15,11 @@ from configuration import Config
 from model import Category
 
 from Common.ui.util import raise_error, raise_success
-from Common.ui.common import (F_Widget, F_PageTitle, Button_save, FormLabel,
-                              F_Label, LineEdit, IntLineEdit)
+from Common.ui.common import (FWidget, FPageTitle, Button_save, FormLabel,
+                              FLabel, LineEdit, IntLineEdit)
 
 
-class EditRecordsViewWidget(QDialog, F_Widget):
+class EditRecordsViewWidget(QDialog, FWidget):
     def __init__(self, record, parent, *args, **kwargs):
         QDialog.__init__(self, parent, *args, **kwargs)
 
@@ -37,18 +37,18 @@ class EditRecordsViewWidget(QDialog, F_Widget):
         self.category.setCompleter(completer)
 
         gridbox = QGridLayout()
-        gridbox.addWidget(F_Label(u"Désignation: "), 0, 0)
+        gridbox.addWidget(FLabel(u"Désignation: "), 0, 0)
         gridbox.addWidget(self.description, 1, 0, 1, 2)
-        gridbox.addWidget(F_Label(u"Categorie: "), 2, 0)
+        gridbox.addWidget(FLabel(u"Categorie: "), 2, 0)
         gridbox.addWidget(self.category, 2, 1)
-        gridbox.addWidget(F_Label(u"Image: "), 3, 0)
+        gridbox.addWidget(FLabel(u"Image: "), 3, 0)
         gridbox.addWidget(self.path_, 3, 1, 1, 4)
         butt = Button_save(u"Enregistrer")
         butt.clicked.connect(self.edit_prod)
         gridbox.addWidget(butt, 5, 1)
 
         vbox = QVBoxLayout()
-        vbox.addWidget(F_PageTitle(u"Modification des documents"))
+        vbox.addWidget(FPageTitle(u"Modification des documents"))
         vbox.addLayout(gridbox)
         self.setLayout(vbox)
 
@@ -57,8 +57,8 @@ class EditRecordsViewWidget(QDialog, F_Widget):
 
     def edit_prod(self):
 
-        description = unicode(self.description.toPlainText())
-        category = unicode(self.category.text())
+        description = str(self.description.toPlainText())
+        category = str(self.category.text())
 
         self.description.setStyleSheet("")
         if description == "":
@@ -68,7 +68,7 @@ class EditRecordsViewWidget(QDialog, F_Widget):
 
         record = self.record
         record.description = description
-        # prev_image = unicode(self.record.doc_file_mane)
+        # prev_image = str(self.record.doc_file_mane)
 
         record.category = Category.get_or_create(category)
 

@@ -2,27 +2,28 @@
 # -*- coding: utf8 -*-
 # vim: ai ts=4 sts=4 et sw=4 nu
 # maintainer: Fad
-from __future__ import (unicode_literals, absolute_import, division, print_function)
+from __future__ import (
+    unicode_literals, absolute_import, division, print_function)
 
 from PyQt4.QtGui import (QVBoxLayout, QHBoxLayout, QTableWidgetItem,
                          QIcon, QGridLayout, QSplitter, QFrame,
-                         QMenu, QCompleter, QComboBox, QPushButton)
+                         QMenu, QCompleter, QComboBox)
 from PyQt4.QtCore import QDate, Qt, QVariant, SIGNAL
 
 from Common.ui.util import uopen_file, is_int
-from Common.ui.table import F_TableWidget
-from Common.ui.common import (F_Widget, FormLabel, Button, F_Label,
-                              F_BoxTitle, LineEdit)
+from Common.ui.table import FTableWidget
+from Common.ui.common import (FWidget, FormLabel, Button, FLabel,
+                              FBoxTitle, LineEdit)
 
 from configuration import Config
 from model import (Records, Category)
 
 
-class RecordConsultationViewWidget(F_Widget):
+class ConsultationViewWidget(FWidget):
 
     def __init__(self, record="", parent=0, *args, **kwargs):
-        super(RecordConsultationViewWidget, self).__init__(parent=parent,
-                                                           *args, **kwargs)
+        super(ConsultationViewWidget, self).__init__(parent=parent,
+                                                     *args, **kwargs)
         self.parentWidget().setWindowTitle(Config.NAME_ORGA +
                                            u"   Consultation des documents")
         self.parent = parent
@@ -35,17 +36,18 @@ class RecordConsultationViewWidget(F_Widget):
         self.liste_categ.append(all_category)
         self.liste_categ.reverse()
 
-        for index in xrange(0, len(self.liste_categ)):
+        for index in range(0, len(self.liste_categ)):
             op = self.liste_categ[index]
             sentence = u"%(name)s" % {'name': op.name}
-            self.combo_categ.addItem(sentence, QVariant(op.id))
+            self.combo_categ.addItem(sentence, op.id)
 
         self.combo_categ.connect(self.combo_categ, SIGNAL("currentIndexChanged(int)"),
                                  self.finder)
 
         self.search_field = LineEdit()
         self.search_field.setToolTip("Recherche")
-        self.search_field.setMaximumSize(200, self.search_field.maximumSize().height())
+        self.search_field.setMaximumSize(
+            200, self.search_field.maximumSize().height())
         self.search_field.textChanged.connect(self.finder)
 
         self.vline = QFrame()
@@ -55,15 +57,14 @@ class RecordConsultationViewWidget(F_Widget):
         self.table_resultat = ResultatTableWidget(parent=self)
         self.table_info = InfoTableWidget(parent=self)
 
-        # self.table_resultat.refresh_()
-
         splitter = QSplitter(Qt.Horizontal)
         splitter.setFrameShape(QFrame.StyledPanel)
         splitter_left = QSplitter(Qt.Vertical)
-        splitter_left.addWidget(F_BoxTitle(u"Tableau des Documents"))
+        splitter_left.addWidget(FBoxTitle(u"Tableau des Documents"))
         splitter_left.addWidget(self.table_resultat)
         splitter_rigth = QSplitter(Qt.Vertical)
-        splitter_rigth.addWidget(F_BoxTitle(u"Les détails d'un document stocké"))
+        splitter_rigth.addWidget(
+            FBoxTitle(u"Les détails d'un document stocké"))
         splitter_rigth.addWidget(self.table_info)
         splitter_rigth.resize(100, 1000)
         splitter.addWidget(splitter_left)
@@ -85,15 +86,16 @@ class RecordConsultationViewWidget(F_Widget):
 
     def finder(self):
 
-        categ = unicode(self.liste_categ[self.combo_categ.currentIndex()])
-        value = unicode(self.search_field.text())
+        categ = str(self.liste_categ[self.combo_categ.currentIndex()])
+        value = str(self.search_field.text())
         self.table_resultat.refresh_(categ, value)
 
 
-class ResultatTableWidget(F_TableWidget):
+class ResultatTableWidget(FTableWidget):
     """docstring for ResultatTableWidget"""
+
     def __init__(self, parent, *args, **kwargs):
-        F_TableWidget.__init__(self, parent=parent, *args, **kwargs)
+        FTableWidget.__init__(self, parent=parent, *args, **kwargs)
 
         self.parent = parent
         self.hheaders = ["i", u"Categorie", u"Documents", "Ouvrir"]
@@ -124,7 +126,8 @@ class ResultatTableWidget(F_TableWidget):
         records = records.select().where(Records.description.contains(value))
 
         try:
-            self.data = [("", record.category, record.description, "") for record in records]
+            self.data = [("", record.category, record.description, "")
+                         for record in records]
         except AttributeError:
             pass
 
@@ -144,18 +147,18 @@ class ResultatTableWidget(F_TableWidget):
             uopen_file(self.record.doc_file_slug)
 
 
-class InfoTableWidget(F_Widget):
+class InfoTableWidget(FWidget):
 
     def __init__(self, parent, *args, **kwargs):
-        super(F_Widget, self).__init__(parent=parent, *args, **kwargs)
+        super(FWidget, self).__init__(parent=parent, *args, **kwargs)
 
         self.parent = parent
 
         self.refresh()
-        self.description = F_Label(" ")
-        self.category = F_Label(" ")
-        self.taille = F_Label(" ")
-        self.date = F_Label(" ")
+        self.description = FLabel(" ")
+        self.category = FLabel(" ")
+        self.taille = FLabel(" ")
+        self.date = FLabel(" ")
         # self.chow_doc = Button("Ouvrir")
         # self.chow_doc.setIcon(QIcon.fromTheme('document-open', QIcon('')))
         # self.chow_doc.setEnabled(False)
@@ -174,11 +177,13 @@ class InfoTableWidget(F_Widget):
     def refresh_(self, record):
         self.record = record
         self.description.setText(u"<p><b>Description:</b> {description}<p>"
-                          u"<p> <b>Nom du fichier:</b> {fname}<p> "
-                          .format(description=self.record.description.title(),
-                                  fname=self.record.doc_file_mane))
-        self.category.setText(u"<p><b>Categorie: </b> {category}</p>".format(category=self.record.category.display_name()))
-        self.taille.setText(u"<p><b>Taille: </b>{taille}</p>".format(taille=self.record.get_taille))
+                                 u"<p> <b>Nom du fichier:</b> {fname}<p> "
+                                 .format(description=self.record.description.title(),
+                                         fname=self.record.doc_file_mane))
+        self.category.setText(
+            u"<p><b>Categorie: </b> {category}</p>".format(category=self.record.category.display_name()))
+        self.taille.setText(
+            u"<p><b>Taille: </b>{taille}</p>".format(taille=self.record.get_taille))
         dates = """ <h2><b>Dates</h2>
                     <ul>
                     <p><b>création: </b> {mtime}</p

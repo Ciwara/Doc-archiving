@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# encoding=utf-8
+# -*- coding: utf-8 -*-
 # maintainer: Fad
 
 
-from mainwindow import MainWindow
-from menubar import MenuBar
+# from mainwindow import MainWindow
+# from menubar import MenuBar

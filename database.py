@@ -1,11 +1,12 @@
 #!/usr/bin/env python
-# encoding=utf-8
+# -*- coding: utf-8 -*-
 # Autor: Fadiga
 
 from __future__ import (unicode_literals, absolute_import,
                         division, print_function)
 
-from model import (Records, Owner, Category, Settings, SettingsAdmin, Version)
+from Common.models import SettingsAdmin, Version, FileJoin, Organization, Owner
+from model import Records, Category
 
 
 def setup(drop_tables=False):
@@ -16,9 +17,10 @@ def setup(drop_tables=False):
     for model in [Records,
                   Owner,
                   Category,
-                  Settings,
+                  Organization,
                   SettingsAdmin,
-                  Version]:
+                  Version,
+                  FileJoin]:
         if drop_tables:
             model.drop_table()
         if not model.table_exists():
@@ -26,6 +28,7 @@ def setup(drop_tables=False):
             did_create = True
 
     if did_create:
-        from Common.fixture import init_fuxture
-        print(u"---- Creation de la BD -----")
-        init_fuxture()
+        from fixture import fixt_init
+        fixt_init().creat_all_or_pass()
+
+setup()

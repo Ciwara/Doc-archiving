@@ -3,39 +3,39 @@
 # vim: ai ts=4 sts=4 et sw=4 nu
 # maintainer: Fad
 
-from __future__ import (unicode_literals, absolute_import, division, print_function)
+from __future__ import (
+    unicode_literals, absolute_import, division, print_function)
 
-import os, sys; sys.path.append(os.path.abspath('../'))
+import os
+import sys
 import locale
-import gettext, gettext_windows
+import gettext
+import gettext_windows
+sys.path.append(os.path.abspath('../'))
 
-from PyQt4.QtGui import QApplication, QDialog
-
-from Common.ui.window import F_Window
-from Common.ui.login import LoginWidget, john_doe
-from ui.mainwindow import MainWindow
-from configuration import Config
+from PyQt4.QtGui import QApplication
 
 from database import setup
+from Common.ui.window import FWindow
+from Common.cmain import cmain
+from Common.ui.cstyle import CSS
 
+from ui.mainwindow import MainWindow
 app = QApplication(sys.argv)
+
 
 def main():
 
     gettext_windows.setup_env()
     locale.setlocale(locale.LC_ALL, '')
-    gettext.install('main_mb', localedir='locale', unicode=True)
+    gettext.install('min_record', localedir='locale')
     window = MainWindow()
-    setattr(F_Window, 'window', window)
+    setattr(FWindow, 'window', window)
     window.show()
     # window.showMaximized()
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
     setup()
-
-    if not Config.LOGIN:
-        john_doe()
-        main()
-    elif LoginWidget().exec_() == QDialog.Accepted:
+    if cmain():
         main()

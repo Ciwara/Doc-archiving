@@ -2,23 +2,25 @@
 # -*- coding: utf8 -*-
 # vim: ai ts=4 sts=4 et sw=4 nu
 # maintainer: Fad
-from __future__ import (unicode_literals, absolute_import, division, print_function)
+from __future__ import (
+    unicode_literals, absolute_import, division, print_function)
 
 import os
 import time
 from datetime import datetime
-from py3compat import implements_to_string
+# from py3compat import implements_to_string
 
 from Common import peewee
-from Common.models import (BaseModel, Owner, Settings, SettingsAdmin, Version)
+from Common.models import (BaseModel, Owner, Organization, SettingsAdmin)
 
 from static import Constants
 
 FDATE = u"%c"
 
 
-@implements_to_string
+# @implements_to_string
 class Category(BaseModel):
+
     class Meta:
         ordering = (('name', 'desc'))
 
@@ -39,11 +41,11 @@ class Category(BaseModel):
         return catg
 
 
-@implements_to_string
+# @implements_to_string
 class Records(BaseModel):
+
     class Meta:
         ordering = (('date', 'desc'))
-
 
     date = peewee.DateTimeField(default=datetime.now())
     description = peewee.TextField(null=True, unique=True)
@@ -71,8 +73,9 @@ class Records(BaseModel):
     def slug_mane_doc(self):
         from Common.ui.util import to_jstimestamp
         return "{catg}_{name}.{extension}".format(catg=self.category,
-                                      name=to_jstimestamp(datetime.now()),
-                                      extension=self.doc_file_mane.split(".")[-1])
+                                                  name=to_jstimestamp(
+                                                      datetime.now()),
+                                                  extension=self.doc_file_mane.split(".")[-1])
 
     def import_doc(self, path_filename, filename):
         """ Copy the file, rename file in banc and return new name of the doc

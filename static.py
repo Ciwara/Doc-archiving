@@ -24,15 +24,15 @@ class Constants(CConstants):
     credit = 17
     tolerance = 50
     nb_warning = 5
-    # ------------------------- Application --------------------------#
 
+    # ------------------------- Application --------------------------#
 
     DOC_SUPPORT = "*.ppt *.txt *.odt *.ods *.xls *.xlsx *.gif *.png \
                    *.jpg *.doc *.docx *.pdf *.jpeg"
 
     NAME_MAIN = "main_record.py"
     APP_NAME = "Gestion d'archive"
-    APP_VERSION = u"1.1"
+    APP_VERSION = u"1.0.2"
     APP_DATE = u"01/2014"
     img_media = os.path.join(os.path.join(ROOT_DIR, "static"), "images/")
     APP_LOGO =  os.path.join(img_media, "logo.png")

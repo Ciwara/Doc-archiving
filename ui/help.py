@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# encoding=utf-8
+# -*- coding: utf-8 -*-
 # maintainer: fad
 
 import os
@@ -23,4 +23,5 @@ class HTMLEditor(QtGui.QDialog):
             layout = QtGui.QVBoxLayout(self)
             layout.addWidget(view)
         except:
+            raise
             pass

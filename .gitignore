@@ -7,3 +7,8 @@ doc/
 *.pdf
 *.xls
 ARMOIRE/
+__pycache__/
+*.ini
+*.manifest
+*.dll
+*.txt

@@ -13,16 +13,20 @@ from PyQt4.QtGui import (QIcon, QVBoxLayout, QFileDialog, QGridLayout, QTextEdit
                          QTableWidgetItem, QPushButton, QCompleter, QMessageBox)
 
 from Common.ui.util import raise_success, raise_error
-from Common.ui.table import F_TableWidget
-from Common.ui.common import (F_Widget, F_PageTitle, Button_save, FormLabel,
-                              F_Label, LineEdit)
+from Common.ui.table import FTableWidget
+from Common.ui.common import (FWidget, FPageTitle, Button_save, FormLabel,
+                              FLabel, LineEdit)
 from configuration import Config
 from model import Records, Category
 
 from ui.record_edit import EditRecordsViewWidget
 
+try:
+    unicode
+except:
+    unicode = str
 
-class RecordsViewWidget(F_Widget):
+class RecordsViewWidget(FWidget):
 
     def __init__(self, record="", parent=0, *args, **kwargs):
         super(RecordsViewWidget, self).__init__(parent=parent, *args, **kwargs)
@@ -33,7 +37,7 @@ class RecordsViewWidget(F_Widget):
         self.parent = parent
 
         tablebox = QVBoxLayout()
-        tablebox.addWidget(F_PageTitle(u"Tableau document"))
+        tablebox.addWidget(FPageTitle(u"Tableau document"))
         self.table_record = RecordsTableWidget(parent=self)
         tablebox.addWidget(self.table_record)
 
@@ -49,13 +53,13 @@ class RecordsViewWidget(F_Widget):
         self.category.setCompleter(completer)
 
         gridbox = QGridLayout()
-        gridbox.addWidget(F_Label(u"Désignation: "), 0, 0)
+        gridbox.addWidget(FLabel(u"Désignation: "), 0, 0)
         gridbox.addWidget(self.description, 1, 0, 1, 2)
-        gridbox.addWidget(F_Label(u"Categorie: "), 2, 0)
+        gridbox.addWidget(FLabel(u"Categorie: "), 2, 0)
         gridbox.addWidget(self.category, 2, 1)
         butt_parco = QPushButton(QIcon.fromTheme('document-open', QIcon('')), "")
         butt_parco.clicked.connect(self.import_image)
-        gridbox.addWidget(F_Label(u"Image: "), 3, 0)
+        gridbox.addWidget(FLabel(u"Image: "), 3, 0)
         gridbox.addWidget(butt_parco, 3, 1)
         gridbox.addWidget(self.path_, 4, 0, 4, 2)
         butt = Button_save(u"Enregistrer")
@@ -80,8 +84,8 @@ class RecordsViewWidget(F_Widget):
 
     def add_prod(self):
         ''' add operation '''
-        description = unicode(self.description.toPlainText())
-        category = unicode(self.category.text())
+        description = str(self.description.toPlainText())
+        category = str(self.category.text())
         print(description)
 
         self.description.setStyleSheet("")
@@ -95,9 +99,9 @@ class RecordsViewWidget(F_Widget):
         record.category = Category.get_or_create(category)
 
         try:
-            record.doc_file_mane = unicode(self.name_file)
+            record.doc_file_mane = str(self.name_file)
             record.doc_file_slug = record.import_doc(unicode(self.path_filename),
-                                                     unicode(self.name_file))
+                                                     str(self.name_file))
         except IOError:
             raise
             raise_error(u"Problème d'import du fichier",
@@ -129,10 +133,10 @@ class RecordsViewWidget(F_Widget):
                 return False
 
 
-class RecordsTableWidget(F_TableWidget):
+class RecordsTableWidget(FTableWidget):
 
     def __init__(self, parent, *args, **kwargs):
-        F_TableWidget.__init__(self, parent=parent, *args, **kwargs)
+        FTableWidget.__init__(self, parent=parent, *args, **kwargs)
 
         self.parent = parent
         self.hheaders = [u"Category", u"Document", u"Modification", u"Suppression"]
@@ -169,7 +173,7 @@ class RecordsTableWidget(F_TableWidget):
             self.parent.open_dialog(EditRecordsViewWidget, modal=True, record=record)
             # self.parent.change_main_context(RecordsViewWidget)
         if column == 3:
-            self.title = F_PageTitle()
+            self.title = FPageTitle()
             reply = QMessageBox.question(self, 'Confirmation de le suppression',
                 self.tr("<h4>Voulez vous vraiment le supprimer?<h4>"),
                  QMessageBox.Yes, QMessageBox.No)

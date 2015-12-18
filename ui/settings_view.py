@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# encoding=utf-8
+# -*- coding: utf-8 -*-
 # maintainer: Fad
 from __future__ import (unicode_literals, absolute_import, division, print_function)
 
@@ -8,25 +8,25 @@ import os
 from PyQt4.QtGui import (QVBoxLayout, QHBoxLayout, QGridLayout, QDialog)
 from PyQt4.QtCore import Qt
 
-from Common.ui.common import (F_Widget, F_PageTitle, Button, F_Label)
+from Common.ui.common import (FWidget, FPageTitle, Button, FLabel)
 from Common.ui.util import raise_success
 
 
-class SettingsViewWidget(QDialog, F_Widget):
+class SettingsViewWidget(QDialog, FWidget):
     def __init__(self, parent, *args, **kwargs):
         QDialog.__init__(self, parent, *args, **kwargs)
         super(SettingsViewWidget, self).__init__(parent=parent, *args, **kwargs)
         self.record = record
 
         self.setWindowTitle(u"Confirmation de le suppression")
-        self.title = F_PageTitle(u"Voulez vous vraiment le supprimer?")
+        self.title = FPageTitle(u"Voulez vous vraiment le supprimer?")
 
         self.title.setAlignment(Qt.AlignHCenter)
         title_hbox = QHBoxLayout()
         title_hbox.addWidget(self.title)
         report_hbox = QGridLayout()
 
-        report_hbox.addWidget(F_Label(u"Le document {} ".format(self.record.display_name())))
+        report_hbox.addWidget(FLabel(u"Le document {} ".format(self.record.display_name())))
         #delete and cancel hbox
         Button_hbox = QHBoxLayout()
 
