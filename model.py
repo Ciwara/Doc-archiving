@@ -10,7 +10,7 @@ import time
 from datetime import datetime
 # from py3compat import implements_to_string
 
-from Common import peewee
+import peewee
 from Common.models import (BaseModel, Owner, Organization, SettingsAdmin)
 
 from static import Constants

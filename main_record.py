@@ -8,9 +8,7 @@ from __future__ import (
 
 import os
 import sys
-import locale
-import gettext
-import gettext_windows
+
 sys.path.append(os.path.abspath('../'))
 
 from PyQt4.QtGui import QApplication
@@ -18,18 +16,16 @@ from PyQt4.QtGui import QApplication
 from database import setup
 from Common.ui.window import FWindow
 from Common.cmain import cmain
-from Common.ui.cstyle import CSS
+from Common.ui.qss import appStyle
 
 from ui.mainwindow import MainWindow
+
 app = QApplication(sys.argv)
 
 
 def main():
-
-    gettext_windows.setup_env()
-    locale.setlocale(locale.LC_ALL, '')
-    gettext.install('min_record', localedir='locale')
     window = MainWindow()
+    window.setStyleSheet(appStyle)
     setattr(FWindow, 'window', window)
     window.show()
     # window.showMaximized()

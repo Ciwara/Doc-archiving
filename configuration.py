@@ -7,7 +7,7 @@ from __future__ import (
 
 from static import Constants
 
-from Common import peewee
+import peewee
 
 
 class Config(Constants):
